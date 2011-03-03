@@ -1,0 +1,82 @@
+* we want a command to verify the sanity of an environment
+  - primarily for ad hoc use in dev environments right now
+  - figure out whether and how to automate it / integrate later
+  - possibly integrate into the deploy process: don't add a server back into the SLB rotation unless it is sane
+  - possibly incorporated into wsgi boot process
+  - tests written in python
+    - write test harness, use python TestCase
+
+* Services
+  - Apache
+    - ping server-info module on localhost (obfuscated url?)
+    - check that vhosts match site_list
+  - WSGI daemon
+    - add server-info to medley (also nice for slb healthchecks)
+    - talk to them over their unix sockets (maybe)
+  - lighttpd
+    - static request, mod_status, or at least HEAD => 200
+  - mogrify
+    - scale some_image_that_will_always_be_here.png
+      -  test for cached file
+      -  delete cached file
+  - media mounts
+    - test MEDIA_ROOT, at the minimum
+    - more discovery required
+    - read & write
+    - make sure it's actually mounted
+    - permissions, and: who runs this script?
+  - templates
+    - verify existence of links pointing into medley-templates
+  - postgres
+    - make some queries (version, read/write)
+    - verify schema? ownership? constraints? compute pi to nth digit?
+    - replication??
+  - memcache
+    - set / get
+    - stats
+    - flush cache in reloadprod command (and rename reloadprod command!)
+  - celery (workers, beat, and rabbitmq)
+    - verify rabbit queues
+    - celery task -> queue -> worker -> something to indicate success within n seconds
+    - celery periodic task -> celerybeat -> queue -> worker -> something to indicate success within n seconds
+    - make sure celery workers are running the version of code we expect
+    - add queue depth monitoring graphs
+    - integrate celerymon if possible
+    - is it deployed where it's supposed to be deployed?
+  - solr
+    - fix solr so it reports its schema
+    - index & search (& remove)
+    - replication??
+      - also need to figure out how to NOT automatically install new schema
+      - but automate in VMs
+  - virtualenv
+    - python version
+    - packages match pip
+  - medley
+    - is it deployed where it's supposed to be deployed?
+    - have an endpoint to expose HEAD git hash
+  - signin
+    - test vhost and have sanity endpoint / server-info w/ code hash
+    - is it deployed where it's supposed to be deployed?
+
+* services we still need to elaborate
+  - hudson slaves
+  - host config (/etc/hosts, /etc/resolv.conf, /etc/sudoers, /etc/*)
+  - varnish (possibly, for adt)
+  - slbs
+  - cron jobs
+
+* most importantly: what do we call it?! *sane*
+
+* fe != prod (but should (within reason))
+  - if we have the same service stack w/ well-defined interfaces, then implementation details are less important
+  - recognize that, in many cases, we don't need fe == prod, we need fe == fast
+
+* service dependency graph
+  - we need one of these
+  - auto-generated, where possible
+  - integration with config mgmt tools (puppet)
+  - transparent & visible
+  - answers two questions:
+    - which services do I depend on? (the "what")
+    - which hosts run which services? (hosts, ports, paths, urls, etc: the "where")
