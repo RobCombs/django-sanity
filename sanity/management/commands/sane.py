@@ -22,7 +22,7 @@ TEST_CLASS_LOOKUP = {
 class Command(BaseCommand):
     help = 'Usage: django-admin.py sane <test_module1 test_module2 ...> or  \
                    \n       django-admin.py sane to test all configured Sane modules or \
-                   \n       django-admin.py sane list_test_modules to get a list of Sane modules to be tested'
+                   \n       django-admin.py sane list to get a list of Sane modules to be tested'
 
     def handle(self, *args, **options):
         """
