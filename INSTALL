@@ -6,5 +6,5 @@ REQUIREMENTS
 
 INSTALLATION
 
-  * Add 'sanity' to INSTALLED_APPS
-
+  1) Add 'sanity' to INSTALLED_APPS
+  2) python setup.py develop
