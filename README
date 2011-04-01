@@ -1,3 +1,11 @@
+What is the django-sanity app used for?
+Sanity is a Django application providing tests to ensure stability for a module in a given environment.
+
+As of 04/01/2011, the django-sanity app supports testing the following module(s):
+    * Celery
+
+
+Additional sanity requirements to implement:
 * we want a command to verify the sanity of an environment
   - primarily for ad hoc use in dev environments right now
   - figure out whether and how to automate it / integrate later

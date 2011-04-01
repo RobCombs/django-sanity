@@ -1,0 +1,10 @@
+REQUIREMENTS
+
+  - Python 2.6.1 or greater
+  - Django 1.2 or greater
+
+
+INSTALLATION
+
+  * Add 'sanity' to INSTALLED_APPS
+
