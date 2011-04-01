@@ -30,7 +30,7 @@ class Command(BaseCommand):
         """
 
         if args:
-            if args[0]=='list_test_modules':
+            if args[0]=='list':
                 self.stdout.write('List of modules that Sane is configured to test %s\n' % (TEST_CLASS_LOOKUP.keys()))
                 return
 
