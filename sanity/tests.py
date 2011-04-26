@@ -2,24 +2,25 @@ import unittest
 import sys
 import socket 
 import logging
+from pprint import pprint
 
 from amqplib import client_0_8 as amqp
 
 from django.db import settings
 
 from sanity.tasks import add
-from sanity.toolbox import print_celery_stats, fetch_celery_daemon_list, fetch_celeryd_daemon_list, fetch_celery_daemon_code_path, fetch_current_git_repo_hash, fetch_celeryd_daemon_count
-
+#from sanity.toolbox import print_celery_stats, get_celery_daemon_list, get_celeryd_daemon_list, get_celery_daemon_code_path, get_current_git_repo_hash, get_celeryd_daemon_count
+from sanity.toolbox import get_celery_stats
 
 class TestCelery(unittest.TestCase):
     """
     Home for Celery related environment tests
     """
-    celery_daemon_list = fetch_celery_daemon_list()
-    celeryd_daemon_list = fetch_celeryd_daemon_list(celery_daemon_list)
-    celery_daemon_code_path = fetch_celery_daemon_code_path(celeryd_daemon_list)
     
-    print_celery_stats(celery_daemon_list)
+    stats = get_celery_stats()
+    pprint(stats)
+
+    #print_celery_stats(celery_daemon_list)
     
     def setUp(self):
         #put pre-test prerequisites here.
@@ -84,28 +85,29 @@ class TestCelery(unittest.TestCase):
 
         #In case the Rabbit MQ server is backed up, wait in line for it to consume the message.
         chan.wait()
-        
+
         #clean up mock resources.
         chan.basic_cancel("testtag")
         chan.close()
         conn.close()
 
-    def test_verify_that_celery_daemons_are_running_the_correct_code(self):
-        celery_daemon_git_repo_hash = fetch_current_git_repo_hash(self.celery_daemon_code_path)
-        current_directory_git_repo_hash = fetch_current_git_repo_hash('.')
+    """def test_verify_that_celery_daemons_are_running_the_correct_code(self):
+        celery_daemon_git_repo_hash = get_current_git_repo_hash(self.celery_daemon_code_path)
+        current_directory_git_repo_hash = get_current_git_repo_hash('.')
         logging.debug("-------------test_verify_that_celery_daemons_are_running_the_correct_code-------------")
         logging.debug("Celery_daemon_git_repo_hash: %s" % celery_daemon_git_repo_hash)
         logging.debug("Current_directory_git_repo_hash: %s" % current_directory_git_repo_hash)
         if current_directory_git_repo_hash and celery_daemon_git_repo_hash:
-            self.assertEqual(fetch_current_git_repo_hash(self.celery_daemon_code_path), fetch_current_git_repo_hash('.'))
+            self.assertEqual(get_current_git_repo_hash(self.celery_daemon_code_path), get_current_git_repo_hash('.'))
         else:
             logging.debug("Skipping code check test since there are not 2 git hashes to compare.")
             pass
+    """
             
     def test_verify_that_there_is_at_least_one_celeryd_worker_running(self):
         logging.debug("-------------test_verify_that_there_is_at_least_one_celeryd_worker_running-------------")
-        number_of_celeryd_daemons_running = fetch_celeryd_daemon_count(self.celeryd_daemon_list)
-        logging.debug("Number of celeryd workers running: %s" % number_of_celeryd_daemons_running)
+        number_of_celeryd_daemons_running = len(self.stats)
+        logging.debug("Number of celeryd worker nodes running: %s" % number_of_celeryd_daemons_running)
         self.assertTrue(number_of_celeryd_daemons_running>0)
         
     def test_celery_imports(self):
@@ -116,7 +118,7 @@ class TestCelery(unittest.TestCase):
             
             m = map(__import__, settings.CELERY_IMPORTS)
             #self.assert(m)
-        except SyntaxError, ImportError, e:
+        except ImportError, e:
             self.fail('Import/Syntax Error' % e)
             
 
