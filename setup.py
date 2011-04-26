@@ -13,7 +13,7 @@ setup(
     version = "0.0.1",
     author = "Cox Media Group Digital",
     author_email = "clay@daemons.net",
-    description = "Django management command for determining if components are sane within the context of an environment.",
+    description = "Django management command for determining if resources are sane within the context of an environment.",
     keywords = "sanity",
     packages = ['sanity'],
     long_description = read('README'),

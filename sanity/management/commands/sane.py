@@ -35,16 +35,16 @@ class Command(BaseCommand):
                 return
 
             for module in args:
-                self.stdout.write('\n\n------------------------------------------------------\n')
-                self.stdout.write('-------- Running unit test suite for %s ----------\n' % module)
-                self.stdout.write('------------------------------------------------------\n\n')
+                self.stdout.write('\n\n-------------------------------------------------------------\n')
+                self.stdout.write('-------- Running environment test suite for %s ----------\n' % module)
+                self.stdout.write('-------------------------------------------------------------\n\n')
                 suite = unittest.TestLoader().loadTestsFromTestCase(TEST_CLASS_LOOKUP[module])
                 unittest.TextTestRunner().run(suite)
         else:
             #No args...test everything
             for key, value in TEST_CLASS_LOOKUP.iteritems():
                 self.stdout.write('\n\n------------------------------------------------------\n')
-                self.stdout.write('-------- Running unit test suite for %s ----------\n' % key)
+                self.stdout.write('-------- Running environment test suite for %s ----------\n' % key)
                 self.stdout.write('------------------------------------------------------\n\n')
                 suite = unittest.TestLoader().loadTestsFromTestCase(value)
                 unittest.TextTestRunner().run(suite)
