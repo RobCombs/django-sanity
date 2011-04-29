@@ -4,10 +4,11 @@ Sane management command that runs the related tests for the module passed to it
 
 """
 
-import unittest
+from unittest import TextTestRunner, TestLoader
 
 from django.core.management.base import BaseCommand
-from sanity.tests import TestCelery, TestSolr
+from sanity.checks.celery import TestCelery
+from sanity.checks.solr import TestSolr
 
 SANE_TEST_MODULES = (
                     TestCelery,
@@ -38,13 +39,13 @@ class Command(BaseCommand):
                 self.stdout.write('\n\n-------------------------------------------------------------\n')
                 self.stdout.write('-------- Running environment test suite for %s ----------\n' % module)
                 self.stdout.write('-------------------------------------------------------------\n\n')
-                suite = unittest.TestLoader().loadTestsFromTestCase(TEST_CLASS_LOOKUP[module])
-                unittest.TextTestRunner().run(suite)
+                suite = TestLoader().loadTestsFromTestCase(TEST_CLASS_LOOKUP[module])
+                TextTestRunner(descriptions=True, verbosity=2).run(suite)
         else:
             #No args...test everything
             for key, value in TEST_CLASS_LOOKUP.iteritems():
                 self.stdout.write('\n\n------------------------------------------------------\n')
                 self.stdout.write('-------- Running environment test suite for %s ----------\n' % key)
                 self.stdout.write('------------------------------------------------------\n\n')
-                suite = unittest.TestLoader().loadTestsFromTestCase(value)
-                unittest.TextTestRunner().run(suite)
+                suite = TestLoader().loadTestsFromTestCase(value)
+                TextTestRunner().run(suite)

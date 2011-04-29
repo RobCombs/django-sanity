@@ -6,22 +6,16 @@
 
 import socket
 import psutil
+import subprocess
+import logging
 
+from celery.task.control import inspect
 
 from django.conf import settings
 
-import subprocess
-from pprint import pprint
-from celery.task.control import inspect
+from sanity.tasks import get_cmdline, get_server
 
-from sanity.tasks import get_cmdline
-
-
-#CELERY_HOST_LIST = ('app8.ddtc.cmgdigital.com', 'app1.ddtc.cmgdigital.com', )
-CELERY_HOST_LIST = ('app8.ddtc.cmgdigital.com',)
-TIMEOUT = 60 # 60 seconds
-
-CELERY_DAEMON_KWARGS = {0 : 'django-admin.py', 1 : 'celery', 2 : 'celerybeat'}
+TIMEOUT = 10 # 10 seconds
 
 def is_open(ip, port):
     """ ..or would you prefer i use nmap? """
@@ -33,8 +27,8 @@ def is_open(ip, port):
     except:
         return False
 
-
 def get_celery_daemon_code_path(celery_daemon):
+    """ Extract the celery code path from the argument and return it. """
     celery_daemon_code_path = ''
     for celery_daemon_bits in celery_daemon.split():
         python_path_index = celery_daemon_bits.find('--pythonpath=')
@@ -42,29 +36,8 @@ def get_celery_daemon_code_path(celery_daemon):
             celery_daemon_code_path = celery_daemon_bits[celery_daemon_bits.find('=')+1:]
     return celery_daemon_code_path
 
-def get_celery_daemon_list():
-    output_list = []
-    print '\n\n\n\n*************************************************'
-    for celery_host in CELERY_HOST_LIST:
-        celery_daemons = subprocess.Popen("ssh %s ps -ef | grep %s | grep %s | grep %s" % 
-                        (celery_host, CELERY_DAEMON_KWARGS[0], CELERY_DAEMON_KWARGS[1], settings.DJANGO_ENV),
-                        shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        output, stderr = celery_daemons.communicate()
-        output_list.append(output)
-        output_list_tostr = ''.join(output_list).split('\n')
-        output_list_tostr.pop()
-    return output_list_tostr
-
-def get_celeryd_daemon_list(celery_daemon_list):
-    celeryd_daemon_list = []
-    for celery_daemon in celery_daemon_list:
-       celeryd_django_kwarg = '%s %s' % (CELERY_DAEMON_KWARGS[0], CELERY_DAEMON_KWARGS[2])
-       if celery_daemon.find(celeryd_django_kwarg) ==-1:
-           celeryd_daemon_list.append(celery_daemon)
-    return celeryd_daemon_list
-
 def get_celery_daemon_log_list(celery_daemon):
-
+    """ Extract the celery log from the argument and return it. """
     celery_daemon_bits = celery_daemon.split()
     try:
         return celery_daemon_bits[celery_daemon_bits.index('-f')+1]
@@ -72,107 +45,77 @@ def get_celery_daemon_log_list(celery_daemon):
        return ''
 
 def get_celery_daemon_queue(celery_daemon):
+    """ Extract the celery queue from the argument and return it. """
+    celery_daemon_queue = []
+    celery_daemon_bits = celery_daemon.split()
+    try:
+        celery_daemon_queue.append(celery_daemon_bits[celery_daemon_bits.index('-Q')+1])
+        return celery_daemon_queue
+    except ValueError:
+        return settings.CELERY_QUEUES.keys()
 
-   celery_daemon_bits = celery_daemon.split()
-   try:
-       return celery_daemon_bits[celery_daemon_bits.index('-Q')+1]
-   except ValueError:
-      return ''
-
-def get_celery_daemon_queue_list(celery_daemon_list):
-    celery_daemon_queue_list = {}
-    
-    for celery_daemon in celery_daemon_list:
-       celery_daemon_bits = celery_daemon.split()
-       try:
-          queue = celery_daemon_bits[celery_daemon_bits.index('-Q')+1]
-          try:
-             celery_daemon_queue_list[queue] +=1
-          except KeyError:
-             celery_daemon_queue_list[queue] = 1
-       except ValueError:
-           pass
-    return celery_daemon_queue_list
-
-def get_celerybeat_daemon_list(celery_daemon_list):
-    celerybeat_daemon_list = []
-    for celery_daemon in celery_daemon_list:
-       celerybeat_django_kwarg = '%s %s' % (CELERY_DAEMON_KWARGS[0], CELERY_DAEMON_KWARGS[2])
-       if celery_daemon.find(celerybeat_django_kwarg) >-1:
-           celerybeat_daemon_list.append(celery_daemon)
-    return celerybeat_daemon_list
-    
-def get_celeryd_daemon_count(celeryd_daemon_list):
-    return len(celeryd_daemon_list)
-
-def get_celerybeat_daemon_count(celerybeat_daemon_list):
-    return len(celerybeat_daemon_list)
-
-def get_current_git_repo_hash(git_repo_path=None):
-    if not git_repo_path:
-        git_repo_path = "."
-    repo_hash_cmd = subprocess.Popen("cd %s; git rev-parse HEAD" % git_repo_path,
-                    shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    output, stderr = repo_hash_cmd.communicate()
-    git_repo_errors = output.find('fatal: Not a git repository') > -1
-    io_errors = output.find('No such file or directory') > -1
-    return output.strip('\n') if not (git_repo_errors or io_errors) else ''
-"""
-def print_celery_stats(celery_daemon_list):
-    
-    print '\n=============Printing Celery stats=============\n'
-    celerybeat_daemon_list = get_celerybeat_daemon_list(celery_daemon_list)
-    celeryd_daemon_list = get_celeryd_daemon_list(celery_daemon_list)
-    for celery_host in CELERY_HOST_LIST:
-        print 'Celery host(s): \n%s\n\n' % celery_host
-    print '%s celerybeat daemon(s) running: \n%s\n\n' % (get_celerybeat_daemon_count(celerybeat_daemon_list), celerybeat_daemon_list)
-    print '%s celeryd daemon(s) running:' % get_celerybeat_daemon_count(celeryd_daemon_list)
-    for c in celeryd_daemon_list:
-        print c
-    print '\n'    
-    print 'Celery daemon queue list:\n%s\n\n' % get_celery_daemon_queue_list(celeryd_daemon_list)
-    print 'Celery default queue:\n%s\n\n' % settings.CELERY_DEFAULT_QUEUE
-    print 'Celery daemon log list:\n%s\n\n' % get_celery_daemon_log_list(celery_daemon_list)
-    print 'Celery daemon code path:\n%s\n\n' % get_celery_daemon_code_path(celeryd_daemon_list)
-    print 'Rabbit MQ settings:\nServer: %s, Port: %s, VHost: %s, User: %s, Password: %s\n\n' % (settings.BROKER_HOST, settings.BROKER_PORT, settings.BROKER_VHOST, settings.BROKER_USER, settings.BROKER_PASSWORD)
-    print 'Celery imports:'
-    for i in settings.CELERY_IMPORTS:
-        print i
-    print '\n'
-"""
-
-def get_substring_after_flag_argument(flag, string):
-    for s in string.split():
-        index = s.find(flag)
-        if index > -1:
-            return s[index+2:]
+def print_django_celery_config():
+    """ logging.debug(Dango Celery Config. """
+    logging.debug('\n=============Printing Dango Celery Config=============\n')
+    try: 
+        logging.debug('Celery default queue -> %s\n' % settings.CELERY_DEFAULT_QUEUE) 
+    except AttributeError: pass
+    try: 
+        logging.debug('Rabbit MQ settings -> Server: %s, Port: %s, VHost: %s, User: %s, Password: %s\n' % (settings.BROKER_HOST, settings.BROKER_PORT, settings.BROKER_VHOST, settings.BROKER_USER, settings.BROKER_PASSWORD)) 
+    except AttributeError: pass
+    try: 
+        logging.debug('Celery imports -> %s\n' % (settings.CELERY_IMPORTS,)) 
+    except AttributeError: pass
+    try: 
+        logging.debug('Celery task fetch limit -> %s\n' % settings.CELERY_TASK_FETCH_LIMIT)
+    except AttributeError: pass
+    try: 
+        logging.debug('Celery beat schedule -> %s\n' % settings.CELERYBEAT_SCHEDULE)
+    except AttributeError: pass
+    try: 
+        logging.debug('Celery log level -> %s\n' % settings.CELERYD_LOG_LEVEL)
+    except AttributeError: pass
+    try: 
+        logging.debug('Celery log file -> %s\n' % settings.CELERYD_LOG_FILE)
+    except AttributeError: pass
 
 def get_celery_stats():
-    """ Retrieve the number of subprocesses for each worker.  The return value
-        is a dict where the keys are worker names and the values are the number
-        of subprocesses.
+    """ Return the stats for each worker.  The return value
+        is a dict where the keys are worker names and the values are the stats.
     """
-    stats = inspect().stats()
+    try:
+        stats = inspect(timeout=TIMEOUT).stats()
+    except socket.error, (value,message):
+        return -1 #cannot connect to the rabbit MQ server
+        
+    if not stats:
+        return '' #there are not workers to report stats on
+        
     for workername in stats.iterkeys():
         procs = stats[workername]['pool']['processes']
         stats[workername]['children_count'] = len(procs)
-        response = get_cmdline.delay(procs[0])
-        if not response.ready():
-            response.wait()
-        cmdline = response.result
+        cmdline = get_result_of_task(get_cmdline, procs[0])
+        server = get_result_of_task(get_server)
         stats[workername]['log_file'] = get_celery_daemon_log_list(cmdline)
         stats[workername]['queue'] = get_celery_daemon_queue(cmdline)
         stats[workername]['code_path'] = get_celery_daemon_code_path(cmdline)
+        stats[workername]['server'] = server
     return stats
 
-"""def get_celery_daemons():
+def get_result_of_task(task, *args, **kwargs):
+    """ Return the result of a task."""
+    response = task.delay(*args, **kwargs)
+    if not response.ready():
+       response.wait(timeout=TIMEOUT)
+    return response.result
 
-celery_daemons = []
-for process in psutil.get_process_list():           
-    try:                                                                                      
-        if (process.cmdline[2].find("celery")) >=0 and (process.cmdline[1].find("django-admin.py")) >=0:                                    
-            print process.cmdline
-            celery_daemons.append(process)                                                
-    except:                                                                                
-        pass
-"""
+def get_shasum_for_current_directory():
+    """ Return the shasum of a directory. """
+    command = subprocess.Popen('find . -type f -not -wholename "*/.*" -print0 | sort -z | xargs -0 cat | shasum',
+                                shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    shasum, stderr = command.communicate()
+    return shasum
+
+def intersect(a, b):
+    """ Return the intersection of two lists. """
+    return list(set(a) & set(b))
