@@ -11,6 +11,7 @@ class TestSolr(unittest.TestCase):
 
     def test_solr_equality(self):
         """
+        Mock Solr test.
         Tests that 1 + 1 always equals 2.
         """
-        self.failUnlessEqual(1 + 1, 3)
+        self.failUnlessEqual(1 + 1, 2)
