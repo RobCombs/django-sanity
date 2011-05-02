@@ -19,7 +19,7 @@ INSTALLATION for Celery tests
 	)
 
 
-) Add the following timedelta import and entry to the CELERYBEAT_SCHEDULE dictionary in your Django settings file:
+  2) Add the following timedelta import and entry to the CELERYBEAT_SCHEDULE dictionary in your Django settings file:
 	 from datetime import timedelta
      CELERYBEAT_SCHEDULE = {
        "runs-every-5-seconds": {
