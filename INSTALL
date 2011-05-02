@@ -1,10 +1,29 @@
-REQUIREMENTS
+Tested with the following REQUIREMENTS
 
-  - Python 2.6.1 or greater
-  - Django 1.2 or greater
+  - Python 2.6.1
+  - Django 1.2
+  - Celery 2.1.4
 
 
-INSTALLATION
+INSTALLATION to add django-sanity for Django
 
   1) Add 'sanity' to INSTALLED_APPS
   2) python setup.py develop
+  
+
+INSTALLATION for Celery tests
+
+  1) Add 'sanity.tasks', to the CELERY_IMPORTS dictionary in your Django settings file, i.e.,
+     CELERY_IMPORTS = (
+	    'sanity.tasks',
+	)
+
+
+) Add the following timedelta import and entry to the CELERYBEAT_SCHEDULE dictionary in your Django settings file:
+	 from datetime import timedelta
+     CELERYBEAT_SCHEDULE = {
+       "runs-every-5-seconds": {
+                        "task": "sanity.tasks.celerybeat_test",
+                        "schedule": timedelta(seconds=5)
+                        },
+     }

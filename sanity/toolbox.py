@@ -94,6 +94,8 @@ def get_celery_stats():
     for workername in stats.iterkeys():
         procs = stats[workername]['pool']['processes']
         stats[workername]['children_count'] = len(procs)
+        #Parse the command line to get the settings that were passed to the celery worker on start up.
+        #Eventually, we'll want to query this information from the celery worker itself rather than parsing theses args.
         cmdline = get_result_of_task(get_cmdline, procs[0])
         server = get_result_of_task(get_server)
         stats[workername]['log_file'] = get_celery_daemon_log_list(cmdline)
