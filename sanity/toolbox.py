@@ -5,7 +5,6 @@
 """
 
 import socket
-import psutil
 import subprocess
 from pprint import pprint
 from optparse import OptionParser
