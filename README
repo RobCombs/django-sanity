@@ -7,10 +7,34 @@ As of 05/02/2011, the django-sanity app supports testing the following module(s)
     * Celery
 
 USAGE:
-django-admin.py sane <test_module1 test_module2 or...
-django-admin.py sane to test all configured Sane modules or...
-django-admin.py sane list to get a list of Sane modules to be tested
-example: django-admin.py sane celery
+You can execute django-admin.py sane --help or --h to get an output of the usage.  Here is a copy and paste of that output. 
+Usage: /Users/rcombs/devel/cms_aa/bin/django-admin.py sane <resource1 resource2 ...> [--celery_timeout] or                     
+       /Users/rcombs/devel/cms_aa/bin/django-admin.py sane [--celery_timeout] to test all configured Sane modules or                    
+       /Users/rcombs/devel/cms_aa/bin/django-admin.py sane list to get a list of Sane modules to be tested                    
+       Available Resources to test: celery
+
+Options:
+  -v VERBOSITY, --verbosity=VERBOSITY
+                        Verbosity level; 0=minimal output, 1=normal output,
+                        2=all output
+  --settings=SETTINGS   The Python path to a settings module, e.g.
+                        "myproject.settings.main". If this isn't provided, the
+                        DJANGO_SETTINGS_MODULE environment variable will be
+                        used.
+  --pythonpath=PYTHONPATH
+                        A directory to add to the Python path, e.g.
+                        "/home/djangoprojects/myproject".
+  --traceback           Print traceback on exception
+  --ct=CELERY_TIMEOUT, --celery_timeout=CELERY_TIMEOUT
+                        Specify a time out in terms of seconds for tests.  The
+                        default is the value defined in SANITY_CELERY_TIMEOUT.  If that variable is not found, then it will fall back to 10 seconds.
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+
+example: django-admin.py sane celery --celery_timeout=10; This tells django-sanity to test celery and to create a 10 sec timeout limit when attempting to talk to celery.
+
+SANITY_CELERY_TIMEOUT
+Also, django-sanity will pick up any sanity specific variables in your Django settings file like SANITY_CELERY_TIMEOUT.  If django-sanity finds this variable in settings, it will take precedence over the default value of 10.  The command line --celery_timeout arg trumps them all.
 
 ADDITIONAL SANITY REQUIREMENTS TO IMPLEMENT:
 * we want a command to verify the sanity of an environment

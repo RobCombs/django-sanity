@@ -7,15 +7,15 @@
 import socket
 import psutil
 import subprocess
-import logging
+from pprint import pprint
+from optparse import OptionParser
 
 from celery.task.control import inspect
 
 from django.conf import settings
 
+from sanity import config
 from sanity.tasks import get_cmdline, get_server
-
-TIMEOUT = 10 # 10 seconds
 
 def is_open(ip, port):
     """ ..or would you prefer i use nmap? """
@@ -55,42 +55,25 @@ def get_celery_daemon_queue(celery_daemon):
         return settings.CELERY_QUEUES.keys()
 
 def print_django_celery_config():
-    """ logging.debug(Dango Celery Config. """
-    logging.debug('\n=============Printing Dango Celery Config=============\n')
-    try: 
-        logging.debug('Celery default queue -> %s\n' % settings.CELERY_DEFAULT_QUEUE) 
-    except AttributeError: pass
-    try: 
-        logging.debug('Rabbit MQ settings -> Server: %s, Port: %s, VHost: %s, User: %s, Password: %s\n' % (settings.BROKER_HOST, settings.BROKER_PORT, settings.BROKER_VHOST, settings.BROKER_USER, settings.BROKER_PASSWORD)) 
-    except AttributeError: pass
-    try: 
-        logging.debug('Celery imports -> %s\n' % (settings.CELERY_IMPORTS,)) 
-    except AttributeError: pass
-    try: 
-        logging.debug('Celery task fetch limit -> %s\n' % settings.CELERY_TASK_FETCH_LIMIT)
-    except AttributeError: pass
-    try: 
-        logging.debug('Celery beat schedule -> %s\n' % settings.CELERYBEAT_SCHEDULE)
-    except AttributeError: pass
-    try: 
-        logging.debug('Celery log level -> %s\n' % settings.CELERYD_LOG_LEVEL)
-    except AttributeError: pass
-    try: 
-        logging.debug('Celery log file -> %s\n' % settings.CELERYD_LOG_FILE)
-    except AttributeError: pass
+    """ Print Dango Celery Config. """
+    pprint('=============Printing Dango Celery Config=============')
+
+    celery_dict = [(k, v) for k, v in settings.__dict__['_wrapped'].__dict__.iteritems() if k.startswith('CELERY') or k.startswith('BROKER')]
+    pprint(celery_dict)
 
 def get_celery_stats():
     """ Return the stats for each worker.  The return value
         is a dict where the keys are worker names and the values are the stats.
     """
+
     try:
-        stats = inspect(timeout=TIMEOUT).stats()
+        stats = inspect(timeout=int(config.CELERY_TIMEOUT)).stats()
     except socket.error, (value,message):
         return -1 #cannot connect to the rabbit MQ server
-        
+
     if not stats:
         return '' #there are not workers to report stats on
-        
+
     for workername in stats.iterkeys():
         procs = stats[workername]['pool']['processes']
         stats[workername]['children_count'] = len(procs)
@@ -108,7 +91,7 @@ def get_result_of_task(task, *args, **kwargs):
     """ Return the result of a task."""
     response = task.delay(*args, **kwargs)
     if not response.ready():
-       response.wait(timeout=TIMEOUT)
+       response.wait(timeout=int(config.CELERY_TIMEOUT))
     return response.result
 
 def get_shasum_for_current_directory():
