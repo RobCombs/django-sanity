@@ -36,7 +36,7 @@ def write_to_file(file, message):
 
 @task
 def get_shasum_for_celery_worker_code_path(code_path):
-    command = subprocess.Popen('find %s -type f -not -wholename "*/.*" -print0 | sort -z | xargs -0 cat | shasum' % code_path,
+    command = subprocess.Popen('find %s -type f -not -wholename "*/.*" -print0 | sort -z | xargs -0 cat | sha1sum' % code_path,
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     shasum, stderr = command.communicate()
     return shasum

@@ -95,7 +95,7 @@ def get_result_of_task(task, *args, **kwargs):
 
 def get_shasum_for_current_directory():
     """ Return the shasum of a directory. """
-    command = subprocess.Popen('find . -type f -not -wholename "*/.*" -print0 | sort -z | xargs -0 cat | shasum',
+    command = subprocess.Popen('find . -type f -not -wholename "*/.*" -print0 | sort -z | xargs -0 cat | sha1sum',
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     shasum, stderr = command.communicate()
     return shasum
