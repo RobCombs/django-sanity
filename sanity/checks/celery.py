@@ -4,6 +4,8 @@
       is provided by python 2.7 and greater.
 
 """
+
+import logging
 import unittest
 import sys
 import socket 
@@ -16,7 +18,7 @@ from amqplib.client_0_8.exceptions import AMQPChannelException
 from django.db import settings
 
 from sanity.tasks import add, write_to_file, get_shasum_for_celery_worker_code_path
-from sanity.toolbox import get_celery_stats, intersect, get_shasum_for_current_directory, print_django_celery_config, get_result_of_task
+from sanity.toolbox import get_celery_stats, get_shasum_for_current_directory, print_django_celery_config, get_result_of_task
 
 #Global stats variable that's accessed throughout the Celery test suite
 stats = None
@@ -61,54 +63,58 @@ class TestCelery(unittest.TestCase):
             conn = amqp.Connection(host="%s:%s" % (settings.BROKER_HOST, settings.BROKER_PORT), 
                                    userid=settings.BROKER_USER, password=settings.BROKER_PASSWORD,
                                    virtual_host=settings.BROKER_VHOST, insist=False)
-
+                                   
         except socket.error, (value,message): 
             if conn: 
                 conn.close() 
             error_message = "Exception: Cannot connect to the Rabbit MQ server because it's down.  Exception message: %s" % message 
             self.fail(error_message)
-        except IOError: 
+        except IOError, e: 
             if conn: 
                 conn.close() 
             error_message = "Exception: Could not authenticate against the Rabbit MQ server using the following credentials: \
-                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s " % \
+                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s Actual Exception: %s " % \
                     (
                     settings.BROKER_HOST,
                     settings.BROKER_PORT, 
                     settings.BROKER_USER,
                     settings.BROKER_PASSWORD,
-                    settings.BROKER_VHOST
+                    settings.BROKER_VHOST,
+                    e
                     )
             self.fail(error_message)
 
-        #Set up a message to publish to the Rabbit MQ server using some amqp lib magic.
-        chan = conn.channel()
-        msg = amqp.Message('Rabbit MQ is sane!')
-        msg.properties["delivery_mode"] = 2
-        chan.basic_publish(msg,exchange="insane_institue",routing_key="insane_highway")
+        #Let's turn down the amqplib logging because it's pretty chatty and we already got some info out of it.
+        amqplib_logger = logging.getLogger('amqplib')
+        amqplib_logger.setLevel(logging.ERROR)
 
-        #Set up a consumer to engulf the message that was published above.
+        #Set up the exchange, queue and binding(routing) for testing.
         try:
+            chan = conn.channel()
             chan.queue_declare(queue="holding_room", durable=True, exclusive=False, auto_delete=True)
             chan.exchange_declare(exchange="insane_institue", type="direct", durable=True, auto_delete=True,)
             chan.queue_bind(queue="holding_room", exchange="insane_institue", routing_key="insane_highway")
-        except AMQPChannelException:
-            error_message = "Exception: Not authorized to create a new exchange and queue binding for the Rabbit MQ server using the following credentials: \
-                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s " % \
+        except AMQPChannelException, e:
+            error_message = "Ran into a problem publishing/consuming a message to the queue using the following credentials: \
+                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s Actual Exception: %s" % \
                     (
                     settings.BROKER_HOST,
                     settings.BROKER_PORT, 
                     settings.BROKER_USER,
                     settings.BROKER_PASSWORD,
-                    settings.BROKER_VHOST
+                    settings.BROKER_VHOST,
+                    e
                     )
             self.fail(error_message)
-            
+        
+        #Set up a message to publish to the Rabbit MQ server using some amqp lib magic.
+        msg = amqp.Message('Rabbit MQ is sane!')
+        msg.properties["delivery_mode"] = 2
+        chan.basic_publish(msg,exchange="insane_institue",routing_key="insane_highway")
+        
+        #Set up a consumer to engulf the message
         def recv_callback(msg):
             pprint('Received: ' + msg.body + ' from channel #' + str(msg.channel.channel_id))
-            #We got what we need from Rabbit successfully.  Let's turn down the amqplib logging.
-            amqplib_logger = logging.getLogger('amqplib')
-            amqplib_logger.setLevel(pprint)
         chan.basic_consume(queue='holding_room', no_ack=True, callback=recv_callback, consumer_tag="testtag")
 
         #In case the Rabbit MQ server is backed up, wait in line for it to consume the message.
@@ -155,7 +161,7 @@ class TestCelery(unittest.TestCase):
         worker_queues_distinct = set(worker_queues)
         pprint("settings.CELERY_QUEUES: %s celery worker queues: %s " % (settings.CELERY_QUEUES.keys(), worker_queues_distinct))
         message = "settings.CELERY_QUEUES: %s isn't the same as worker queues: %s " % (settings.CELERY_QUEUES.keys(), worker_queues_distinct)
-        queue_worker_settings_intersect_length = len(intersect(stats[workername]['queue'], settings.CELERY_QUEUES.keys()))
+        queue_worker_settings_intersect_length = len(set(worker_queues_distinct).intersection(settings.CELERY_QUEUES.keys()))
         self.assertEqual(queue_worker_settings_intersect_length, len(settings.CELERY_QUEUES.keys()), msg=message)
 
     def test_6_send_a_message_to_every_queue(self):
@@ -168,7 +174,7 @@ class TestCelery(unittest.TestCase):
            self.assertEqual(sum_result, 3, msg="Task to add 1 + 2 for queue %s didn't execute successfully.  Result: %d " % (q, sum_result))
 
     def test_7_celerybeat(self):
-       """Test Celery Beat by checking to see if a specific tasks has executed within the last 5 seconds."""
+       """Test Celery Beat by checking to see if a specific task has executed within the last 5 seconds."""
        global stats
        worker_queues = []
        celerybeat_tasks = {}
@@ -192,7 +198,7 @@ class TestCelery(unittest.TestCase):
        self.fail(msg=message)
 
     def test_8_celery_logs(self):
-        """Test celery logs by writting 'Sanity Check' to each log."""
+        """Test celery logs by writing 'Sanity Check' to each log."""
         global stats
         worker_logs = []
         log_message = 'Sanity Check'

@@ -52,7 +52,6 @@ class Command(BaseCommand):
         config.CELERY_TIMEOUT = options.get('celery_timeout')
 
         if args:
-
             for module in args:
                 self.stdout.write('\n\n-------------------------------------------------------------\n')
                 self.stdout.write('-------- Running environment test suite for %s ----------\n' % module)

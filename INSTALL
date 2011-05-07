@@ -4,7 +4,6 @@ Tested with the following REQUIREMENTS
   - Django 1.2
   - Celery 2.1.4
 
-
 INSTALLATION to add django-sanity for Django
 
   1) Add 'sanity' to INSTALLED_APPS

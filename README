@@ -36,6 +36,10 @@ example: django-admin.py sane celery --celery_timeout=10; This tells django-sani
 SANITY_CELERY_TIMEOUT
 Also, django-sanity will pick up any sanity specific variables in your Django settings file like SANITY_CELERY_TIMEOUT.  If django-sanity finds this variable in settings, it will take precedence over the default value of 10.  The command line --celery_timeout arg trumps them all.
 
+CODE CHECKS FOR CELERY
+django-sanity sane verifies that the code in your current directory matches the code that is running by your celery workers.  You'll
+need to make sure that you can run sha1sum from the command line in a shell.
+
 ADDITIONAL SANITY REQUIREMENTS TO IMPLEMENT:
 * we want a command to verify the sanity of an environment
   - primarily for ad hoc use in dev environments right now

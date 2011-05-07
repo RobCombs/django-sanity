@@ -99,7 +99,3 @@ def get_shasum_for_current_directory():
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     shasum, stderr = command.communicate()
     return shasum
-
-def intersect(a, b):
-    """ Return the intersection of two lists. """
-    return list(set(a) & set(b))
