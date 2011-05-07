@@ -90,6 +90,8 @@ def get_result_of_task(task, *args, **kwargs):
     """ Return the result of a task."""
     response = task.delay(*args, **kwargs)
     if not response.ready():
+       #Raise a time out error if the wait exceeds the timeout threshold and let the exception bubble up the call stack.
+       #These exceptions will be reported as ERRORS with exceptions in the test results.
        response.wait(timeout=int(config.CELERY_TIMEOUT))
     return response.result
 

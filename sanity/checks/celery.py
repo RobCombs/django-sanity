@@ -36,52 +36,32 @@ class TestCelery(unittest.TestCase):
         self.assertFalse(stats == -1, msg = "The RabbitMQ server isn't running for this environment.")
         self.assertFalse(not stats, msg = "There are no celery workers running for this environment.")
         pprint('=============Printing Celery Worker Stats=============')
-        pprint('Number of worker nodes -> %d' % len(stats))
+        pprint('Number of worker nodes -> {0}'.format(len(stats)))
         pprint(stats)
         print_django_celery_config()
 
     def test_1_celery_imports(self):
         "Let's make sure that we can import all of the celery imports defined in settings.CELERY_IMPORTS."
-        pprint("Celery imports: %s" % (settings.CELERY_IMPORTS,))
+        pprint("Celery imports: {0}".format(settings.CELERY_IMPORTS))
         try:
             m = map(__import__, settings.CELERY_IMPORTS)
         except ImportError, e:
-            self.fail('Import Error %s:  Cannot import this list %s' % (e, (settings.CELERY_IMPORTS,)))
+            self.fail('Import Error {0}: Cannot import this list {1}'.format(e, settings.CELERY_IMPORTS))
 
     def test_2_talk_to_the_rabbitmq_server(self):
         "Verify that we can connect to and authenticate against the RabbitMQ server using Django's BROKER settings."
-        rabbitmq_settings = "Rabbit MQ settings: host=%s, port=%s, userid=%s, password=%s, virtual_host=%s " % \
-                (
-                settings.BROKER_HOST,
-                settings.BROKER_PORT, 
-                settings.BROKER_USER,
-                settings.BROKER_PASSWORD,
-                settings.BROKER_VHOST
-                )
+        rabbitmq_settings = "Rabbit MQ settings: host={BROKER_HOST}, port={BROKER_PORT}, userid={BROKER_USER}, password={BROKER_PASSWORD}, virtual_host={BROKER_VHOST}".format(**settings.__dict__['_wrapped'].__dict__)
         pprint(rabbitmq_settings)
         try:
-            conn = amqp.Connection(host="%s:%s" % (settings.BROKER_HOST, settings.BROKER_PORT), 
+            conn = amqp.Connection(host="{0}:{1}".format(settings.BROKER_HOST, settings.BROKER_PORT),
                                    userid=settings.BROKER_USER, password=settings.BROKER_PASSWORD,
                                    virtual_host=settings.BROKER_VHOST, insist=False)
                                    
         except socket.error, (value,message): 
-            if conn: 
-                conn.close() 
-            error_message = "Exception: Cannot connect to the Rabbit MQ server because it's down.  Exception message: %s" % message 
+            error_message = "Exception: Could not connect to the Rabbit MQ server using the following credentials: {0}. Actual Exception: {1}".format(rabbitmq_settings, message) 
             self.fail(error_message)
         except IOError, e: 
-            if conn: 
-                conn.close() 
-            error_message = "Exception: Could not authenticate against the Rabbit MQ server using the following credentials: \
-                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s Actual Exception: %s " % \
-                    (
-                    settings.BROKER_HOST,
-                    settings.BROKER_PORT, 
-                    settings.BROKER_USER,
-                    settings.BROKER_PASSWORD,
-                    settings.BROKER_VHOST,
-                    e
-                    )
+            error_message = "Exception: Could not authenticate against the Rabbit MQ server using the following credentials: {0}. Actual Exception: {1}".format(rabbitmq_settings, e)
             self.fail(error_message)
 
         #Let's turn down the amqplib logging because it's pretty chatty and we already got some info out of it.
@@ -95,16 +75,7 @@ class TestCelery(unittest.TestCase):
             chan.exchange_declare(exchange="insane_institue", type="direct", durable=True, auto_delete=True,)
             chan.queue_bind(queue="holding_room", exchange="insane_institue", routing_key="insane_highway")
         except AMQPChannelException, e:
-            error_message = "Ran into a problem publishing/consuming a message to the queue using the following credentials: \
-                                                        host=%s, port=%s, userid=%s, password=%s, virtual_host=%s Actual Exception: %s" % \
-                    (
-                    settings.BROKER_HOST,
-                    settings.BROKER_PORT, 
-                    settings.BROKER_USER,
-                    settings.BROKER_PASSWORD,
-                    settings.BROKER_VHOST,
-                    e
-                    )
+            error_message = "Ran into a problem publishing/consuming a message to the queue using the following credentials: {0}. Actual Exception: {1}".format(rabbitmq_settings, e)
             self.fail(error_message)
         
         #Set up a message to publish to the Rabbit MQ server using some amqp lib magic.
@@ -129,27 +100,27 @@ class TestCelery(unittest.TestCase):
         """Check to see if there is at least one celery worker running to process tasks."""
         global stats
         number_of_celeryd_daemons_running = len(stats)
-        pprint("Number of celeryd worker nodes running: %s" % number_of_celeryd_daemons_running)
+        pprint("Number of celeryd worker nodes running: {0}".format(number_of_celeryd_daemons_running))
         self.assertTrue(number_of_celeryd_daemons_running>0, msg = "There are no celery workers running")
 
     def test_4_source_code_of_celery_workers(self):
-       """Make sure that the celery workers are running the correct code by verifying that the code in the current directory matches the code
-          that the celery workers are running.
-       """
-       global stats
-       worker_code_paths = []
-       for workername in stats.iterkeys():
+        """Make sure that the celery workers are running the correct code by verifying that the code in the current directory matches the code
+           that the celery workers are running.
+        """
+        global stats
+        worker_code_paths = []
+        for workername in stats.iterkeys():
            if stats[workername]['code_path']:
                worker_code_paths.append(stats[workername]['code_path'])
-       worker_code_paths_distinct = set(worker_code_paths)
-       for worker_code_path in worker_code_paths_distinct:
-           shasum_for_current_directory = get_shasum_for_current_directory()
-           shasum_for_celery_worker_code_path = get_result_of_task(get_shasum_for_celery_worker_code_path, worker_code_path)
-           pprint("Comparing the code in the current directory: %s with a SHA of: %s against the code that the celery workers are running: %s with a SHA of %s" % (os.getcwd(), shasum_for_current_directory, worker_code_path, shasum_for_celery_worker_code_path))
-           message = "The code in the current directory: %s with a SHA of: %s is not the same as the code that the celery workers are running: %s with a SHA of %s" % (os.getcwd(), shasum_for_current_directory, worker_code_path, shasum_for_celery_worker_code_path)
-           self.assertEqual(shasum_for_current_directory, \
-           shasum_for_celery_worker_code_path, \
-           msg=message)
+        worker_code_paths_distinct = set(worker_code_paths)
+        for worker_code_path in worker_code_paths_distinct:
+            shasum_for_current_directory = get_shasum_for_current_directory()
+            shasum_for_celery_worker_code_path = get_result_of_task(get_shasum_for_celery_worker_code_path, worker_code_path)
+            pprint("Comparing the code in the current directory: {0} with a SHA of: {1} against the code that the celery workers are running: {2} with a SHA of {3}".format(os.getcwd(), shasum_for_current_directory, worker_code_path, shasum_for_celery_worker_code_path))
+            message = "The code in the current directory: {0} with a SHA of: {1} is not the same as the code that the celery workers are running: {2} with a SHA of {3}".format(os.getcwd(), shasum_for_current_directory, worker_code_path, shasum_for_celery_worker_code_path)
+            self.assertEqual(shasum_for_current_directory, \
+            shasum_for_celery_worker_code_path, \
+            msg=message)
 
     def test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers(self):
         """Verify that all queues defined in Django settings are being serviced by a celery worker."""
@@ -159,8 +130,8 @@ class TestCelery(unittest.TestCase):
             for q in stats[workername]['queue']:
                 worker_queues.append(q)
         worker_queues_distinct = set(worker_queues)
-        pprint("settings.CELERY_QUEUES: %s celery worker queues: %s " % (settings.CELERY_QUEUES.keys(), worker_queues_distinct))
-        message = "settings.CELERY_QUEUES: %s isn't the same as worker queues: %s " % (settings.CELERY_QUEUES.keys(), worker_queues_distinct)
+        pprint("settings.CELERY_QUEUES: {0} celery worker queues: {1}".format(settings.CELERY_QUEUES.keys(), worker_queues_distinct))
+        message = "settings.CELERY_QUEUES: {0} isn't the same as worker queues: {1}".format(settings.CELERY_QUEUES.keys(), worker_queues_distinct)
         queue_worker_settings_intersect_length = len(set(worker_queues_distinct).intersection(settings.CELERY_QUEUES.keys()))
         self.assertEqual(queue_worker_settings_intersect_length, len(settings.CELERY_QUEUES.keys()), msg=message)
 
@@ -170,8 +141,8 @@ class TestCelery(unittest.TestCase):
        for q in settings.CELERY_QUEUES:
            add.queue = q
            sum_result = get_result_of_task(add, 1, 2)
-           pprint("Executing a task to add 1 + 2 for queue %s.  Result: %d " % (q, sum_result))
-           self.assertEqual(sum_result, 3, msg="Task to add 1 + 2 for queue %s didn't execute successfully.  Result: %d " % (q, sum_result))
+           pprint("Executing a task to add 1 + 2 for queue {0}.  Result: {1}".format(q, sum_result))
+           self.assertEqual(sum_result, 3, msg="Task to add 1 + 2 for queue {0} didn't execute successfully.  Result: {1}".format(q, sum_result))
 
     def test_7_celerybeat(self):
        """Test Celery Beat by checking to see if a specific task has executed within the last 5 seconds."""
@@ -212,6 +183,6 @@ class TestCelery(unittest.TestCase):
             celery_logs = worker_logs_distinct
         self.assertFalse(not celery_logs, msg = "Can't find any logs for celery in settings.CELERYD_LOG_FILE or for the celery workers.")
         for f in celery_logs:
-            pprint("Writing %s to the the following log: %s" % (log_message, f))
+            pprint("Writing {0} to the the following log: {1}".format(log_message, f))
             result = get_result_of_task(write_to_file, f, log_message)
             self.assertTrue("Cannot" not in result, msg = result)

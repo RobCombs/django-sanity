@@ -54,7 +54,7 @@ class Command(BaseCommand):
         if args:
             for module in args:
                 self.stdout.write('\n\n-------------------------------------------------------------\n')
-                self.stdout.write('-------- Running environment test suite for %s ----------\n' % module)
+                self.stdout.write('-------- Running environment test suite for {0} ----------\n'.format(module))
                 self.stdout.write('-------------------------------------------------------------\n\n')
                 suite = TestLoader().loadTestsFromTestCase(TEST_CLASS_LOOKUP[module])
                 TextTestRunner(descriptions=True, verbosity=2).run(suite)
@@ -62,7 +62,7 @@ class Command(BaseCommand):
             #If there are no args passed, test every resource that's configured.
             for key, value in TEST_CLASS_LOOKUP.iteritems():
                 self.stdout.write('\n\n------------------------------------------------------\n')
-                self.stdout.write('-------- Running environment test suite for %s ----------\n' % key)
+                self.stdout.write('-------- Running environment test suite for {0} ----------\n'.format(key))
                 self.stdout.write('------------------------------------------------------\n\n')
                 suite = TestLoader().loadTestsFromTestCase(value)
                 TextTestRunner().run(suite)
