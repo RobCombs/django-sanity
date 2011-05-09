@@ -1,9 +1,8 @@
 """ sanity.management
 
-Sane management command that runs the related tests for the module passed to it
+Sane management command that runs the related tests for the environment resource passed to it.
 
 """
-
 from optparse import make_option
 from unittest import TextTestRunner, TestLoader
 
@@ -27,12 +26,23 @@ TEST_CLASS_LOOKUP = {
 def harvest_sanity_settings():
     """
     Reap sanity specific settings used for customizing sanity related tests.
-    """
-    return dict([(k, v) for k, v in settings.__dict__['_wrapped'].__dict__.iteritems() if k.startswith('SANITY')])
+
+    For any configurations that you'd like to pass to django-sanity, just name space them
+    with a 'SANITY_' string and put them in Django settings.  This adds a great amount of flexibility
+    to the django-sanity framework for customized testing.  SANITY_CELERY_TIMEOUT is an example of how
+    we are using this concept for a custom timeout option for tests.
+
+    :param None: No args.
+    :returns:  dict -- All keyword pairs that start with 'SANITY_' in Django settings.
+    :handles: None
+    :raises: ValueError
+    
+    """    
+    return dict([(k, v) for k, v in settings.__dict__['_wrapped'].__dict__.iteritems() if k.startswith('SANITY_')])
 
 class Command(BaseCommand):
     DJANGO_SANITY_SETTINGS = harvest_sanity_settings()
-    
+
     help = 'Usage: %prog sane <resource1 resource2 ...> [--celery_timeout] or  \
                    \n       %prog sane [--celery_timeout] to test all configured Sane modules or \
                    \n       %prog sane list to get a list of Sane modules to be tested \
@@ -45,10 +55,11 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        """
-        Match the args to the appropriate tests and quick off the test suite runner.
-        """
+        """ Run the Django command.
 
+        Match the args to the appropriate tests and kick off the test suite runner.
+
+        """ 
         config.CELERY_TIMEOUT = options.get('celery_timeout')
 
         if args:

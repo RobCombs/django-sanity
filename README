@@ -101,7 +101,6 @@ ADDITIONAL SANITY REQUIREMENTS TO IMPLEMENT:
   - signin
     - test vhost and have sanity endpoint / server-info w/ code hash
     - is it deployed where it's supposed to be deployed?
-
 * services we still need to elaborate
   - hudson slaves
   - host config (/etc/hosts, /etc/resolv.conf, /etc/sudoers, /etc/*)

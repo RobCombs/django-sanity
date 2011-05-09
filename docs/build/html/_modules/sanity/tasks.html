@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sanity.tasks &mdash; django-sanity v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="django-sanity v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-sanity v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for sanity.tasks</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; sanity.tasks</span>
+
+<span class="sd">Tasks used for testing Celery</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">celery.decorators</span> <span class="kn">import</span> <span class="n">task</span>
+
+
+<span class="c">#written for Celery version 2.1.4.  Refer to the Celery docs for API changes: http://readthedocs.org/docs/celery </span>
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../code.html#sanity.tasks.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return the sum of x and y.</span>
+<span class="sd">    </span>
+<span class="sd">    Return the sum of x and y by way of a Celery worker tasks.</span>
+
+<span class="sd">    :param x: Any randon number 1.</span>
+<span class="sd">    :type x: str.</span>
+<span class="sd">    :param y: Any randon number 2.</span>
+<span class="sd">    :type y: str.</span>
+<span class="sd">    :returns:  int -- the sum of x and y.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: None</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</div>
+<span class="nd">@task</span>
+<div class="viewcode-block" id="get_cmdline"><a class="viewcode-back" href="../../code.html#sanity.tasks.get_cmdline">[docs]</a><span class="k">def</span> <span class="nf">get_cmdline</span><span class="p">(</span><span class="n">pid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return the command of a pid.</span>
+<span class="sd">    </span>
+<span class="sd">    Return the command of a pid.  This is code will be used to get more information from the</span>
+<span class="sd">    Celery workers.</span>
+
+<span class="sd">    :param pid: Look up the command by the pid.</span>
+<span class="sd">    :type pid: str.</span>
+<span class="sd">    :returns:  str -- The command.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: A ValueError will be raised if Popen is called with invalid arguments.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmdline_search</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s">&quot;ps -ef | grep </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">,</span>
+                    <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+    <span class="n">cmdline</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">cmdline_search</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cmdline</span>
+</div>
+<span class="nd">@task</span>
+<div class="viewcode-block" id="write_to_file"><a class="viewcode-back" href="../../code.html#sanity.tasks.write_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Write a message to a file.</span>
+<span class="sd">    </span>
+<span class="sd">    Write a message to a file using Celery.</span>
+
+<span class="sd">    :param file: File to write to.</span>
+<span class="sd">    :type file: str.</span>
+<span class="sd">    :param message: Message to write to file.</span>
+<span class="sd">    :type message: str.</span>
+<span class="sd">    :returns:  str -- The message written to the file or the exception.</span>
+<span class="sd">    :handles: IOError</span>
+<span class="sd">    :raises: None</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s">&quot;Writing message: {0}, to file {1}: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Cannot write to file {0}, Error {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c">#if the file doesn&#39;t exist or if there are permission issues, os.W_OK will return false and come here</span>
+        <span class="k">return</span> <span class="s">&quot;Cannot access file {0}: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+</div>
+<span class="nd">@task</span>
+<div class="viewcode-block" id="get_shasum_for_celery_worker_code_path"><a class="viewcode-back" href="../../code.html#sanity.tasks.get_shasum_for_celery_worker_code_path">[docs]</a><span class="k">def</span> <span class="nf">get_shasum_for_celery_worker_code_path</span><span class="p">(</span><span class="n">code_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Get the shasum of a directory.</span>
+<span class="sd">    </span>
+<span class="sd">    Use the sha1sum module to calculate the hash for the directory passed in.  This hash will be used</span>
+<span class="sd">    for comparisons to ensure that 2 or more directories have the same code.</span>
+
+<span class="sd">    :param code_path: Directory to generate a shasum hash for.</span>
+<span class="sd">    :type code_path: str.</span>
+<span class="sd">    :returns:  str -- The shasum of the directory passed in.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: A ValueError will be raised if Popen is called with invalid arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s">&#39;find {0} -type f -not -wholename &quot;*/.*&quot; -print0 | sort -z | xargs -0 cat | sha1sum&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code_path</span><span class="p">),</span>
+                                <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+    <span class="n">shasum</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">shasum</span>
+</div>
+<span class="nd">@task</span>
+<div class="viewcode-block" id="celerybeat_test"><a class="viewcode-back" href="../../code.html#sanity.tasks.celerybeat_test">[docs]</a><span class="k">def</span> <span class="nf">celerybeat_test</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return true.</span>
+<span class="sd">    </span>
+<span class="sd">    Lightweight Celery Beat task that let&#39;s us know it&#39;s still alive.</span>
+<span class="sd">    </span>
+<span class="sd">    :param None: No args.</span>
+<span class="sd">    :returns:  bool -- Always return true.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">True</span>
+        </div>
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">get_server</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">uname</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-sanity v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Rob Combs.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

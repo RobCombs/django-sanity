@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sanity.checks.celery &mdash; django-sanity v1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="django-sanity v1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">django-sanity v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for sanity.checks.celery</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; sanity.checks.celery</span>
+
+<span class="sd">      Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, which</span>
+<span class="sd">      is provided by python 2.7 and greater.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">socket</span> 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">amqplib</span> <span class="kn">import</span> <span class="n">client_0_8</span> <span class="k">as</span> <span class="n">amqp</span>
+<span class="kn">from</span> <span class="nn">amqplib.client_0_8.exceptions</span> <span class="kn">import</span> <span class="n">AMQPChannelException</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">sanity.tasks</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">write_to_file</span><span class="p">,</span> <span class="n">get_shasum_for_celery_worker_code_path</span>
+<span class="kn">from</span> <span class="nn">sanity.toolbox</span> <span class="kn">import</span> <span class="n">get_celery_stats</span><span class="p">,</span> <span class="n">get_shasum_for_current_directory</span><span class="p">,</span> <span class="n">print_django_celery_config</span><span class="p">,</span> <span class="n">get_result_of_task</span>
+
+<span class="c">#Global stats variable that&#39;s accessed throughout the Celery test suite</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="TestCelery"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery">[docs]</a><span class="k">class</span> <span class="nc">TestCelery</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#put pre-test prerequisites here.</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="TestCelery.test_0_init"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_0_init">[docs]</a>    <span class="k">def</span> <span class="nf">test_0_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the initialization of the test suite by retrieving and printing the celery stats.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">stats</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">get_celery_stats</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">stats</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;The RabbitMQ server isn&#39;t running for this environment.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="ow">not</span> <span class="n">stats</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;There are no celery workers running for this environment.&quot;</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="s">&#39;=============Printing Celery Worker Stats=============&#39;</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="s">&#39;Number of worker nodes -&gt; {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)))</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+        <span class="n">print_django_celery_config</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_1_celery_imports"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_1_celery_imports">[docs]</a>    <span class="k">def</span> <span class="nf">test_1_celery_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">&quot;Let&#39;s make sure that we can import all of the celery imports defined in settings.CELERY_IMPORTS.&quot;</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Celery imports: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_IMPORTS</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">__import__</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_IMPORTS</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&#39;Import Error {0}: Cannot import this list {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_IMPORTS</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_2_talk_to_the_rabbitmq_server"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_2_talk_to_the_rabbitmq_server">[docs]</a>    <span class="k">def</span> <span class="nf">test_2_talk_to_the_rabbitmq_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">&quot;Verify that we can connect to and authenticate against the RabbitMQ server using Django&#39;s BROKER settings.&quot;</span>
+        <span class="n">rabbitmq_settings</span> <span class="o">=</span> <span class="s">&quot;Rabbit MQ settings: host={BROKER_HOST}, port={BROKER_PORT}, userid={BROKER_USER}, password={BROKER_PASSWORD}, virtual_host={BROKER_VHOST}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_wrapped&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="n">rabbitmq_settings</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">amqp</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&quot;{0}:{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">BROKER_HOST</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">BROKER_PORT</span><span class="p">),</span>
+                                   <span class="n">userid</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BROKER_USER</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BROKER_PASSWORD</span><span class="p">,</span>
+                                   <span class="n">virtual_host</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BROKER_VHOST</span><span class="p">,</span> <span class="n">insist</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                                   
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">message</span><span class="p">):</span> 
+            <span class="n">error_message</span> <span class="o">=</span> <span class="s">&quot;Exception: Could not connect to the Rabbit MQ server using the following credentials: {0}. Actual Exception: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rabbitmq_settings</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> 
+            <span class="n">error_message</span> <span class="o">=</span> <span class="s">&quot;Exception: Could not authenticate against the Rabbit MQ server using the following credentials: {0}. Actual Exception: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rabbitmq_settings</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+
+        <span class="c">#Let&#39;s turn down the amqplib logging because it&#39;s pretty chatty and we already got some info out of it.</span>
+        <span class="n">amqplib_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;amqplib&#39;</span><span class="p">)</span>
+        <span class="n">amqplib_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+        <span class="c">#Set up the exchange, queue and binding(routing) for testing.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">chan</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span>
+            <span class="n">chan</span><span class="o">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="s">&quot;holding_room&quot;</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">chan</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="n">exchange</span><span class="o">=</span><span class="s">&quot;insane_institue&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;direct&quot;</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">True</span><span class="p">,)</span>
+            <span class="n">chan</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="s">&quot;holding_room&quot;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s">&quot;insane_institue&quot;</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="s">&quot;insane_highway&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">AMQPChannelException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="s">&quot;Ran into a problem publishing/consuming a message to the queue using the following credentials: {0}. Actual Exception: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rabbitmq_settings</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        
+        <span class="c">#Set up a message to publish to the Rabbit MQ server using some amqp lib magic.</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">amqp</span><span class="o">.</span><span class="n">Message</span><span class="p">(</span><span class="s">&#39;Rabbit MQ is sane!&#39;</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s">&quot;delivery_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">chan</span><span class="o">.</span><span class="n">basic_publish</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="n">exchange</span><span class="o">=</span><span class="s">&quot;insane_institue&quot;</span><span class="p">,</span><span class="n">routing_key</span><span class="o">=</span><span class="s">&quot;insane_highway&quot;</span><span class="p">)</span>
+        
+        <span class="c">#Set up a consumer to engulf the message</span>
+        <span class="k">def</span> <span class="nf">recv_callback</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+            <span class="n">pprint</span><span class="p">(</span><span class="s">&#39;Received: &#39;</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">body</span> <span class="o">+</span> <span class="s">&#39; from channel #&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">channel_id</span><span class="p">))</span>
+        <span class="n">chan</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="s">&#39;holding_room&#39;</span><span class="p">,</span> <span class="n">no_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">recv_callback</span><span class="p">,</span> <span class="n">consumer_tag</span><span class="o">=</span><span class="s">&quot;testtag&quot;</span><span class="p">)</span>
+
+        <span class="c">#In case the Rabbit MQ server is backed up, wait in line for it to consume the message.</span>
+        <span class="n">chan</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+        <span class="c">#clean up mock resources.</span>
+        <span class="n">chan</span><span class="o">.</span><span class="n">basic_cancel</span><span class="p">(</span><span class="s">&quot;testtag&quot;</span><span class="p">)</span>
+        <span class="n">chan</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running">[docs]</a>    <span class="k">def</span> <span class="nf">test_3_verify_that_there_is_at_least_one_celeryd_worker_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check to see if there is at least one celery worker running to process tasks.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">stats</span>
+        <span class="n">number_of_celeryd_daemons_running</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Number of celeryd worker nodes running: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number_of_celeryd_daemons_running</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">number_of_celeryd_daemons_running</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;There are no celery workers running&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_4_source_code_of_celery_workers"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_4_source_code_of_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_4_source_code_of_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make sure that the celery workers are running the correct code by verifying that the code in the current directory matches the code</span>
+<span class="sd">           that the celery workers are running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">stats</span>
+        <span class="n">worker_code_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+           <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;code_path&#39;</span><span class="p">]:</span>
+               <span class="n">worker_code_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;code_path&#39;</span><span class="p">])</span>
+        <span class="n">worker_code_paths_distinct</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">worker_code_paths</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">worker_code_path</span> <span class="ow">in</span> <span class="n">worker_code_paths_distinct</span><span class="p">:</span>
+            <span class="n">shasum_for_current_directory</span> <span class="o">=</span> <span class="n">get_shasum_for_current_directory</span><span class="p">()</span>
+            <span class="n">shasum_for_celery_worker_code_path</span> <span class="o">=</span> <span class="n">get_result_of_task</span><span class="p">(</span><span class="n">get_shasum_for_celery_worker_code_path</span><span class="p">,</span> <span class="n">worker_code_path</span><span class="p">)</span>
+            <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Comparing the code in the current directory: {0} with a SHA of: {1} against the code that the celery workers are running: {2} with a SHA of {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">shasum_for_current_directory</span><span class="p">,</span> <span class="n">worker_code_path</span><span class="p">,</span> <span class="n">shasum_for_celery_worker_code_path</span><span class="p">))</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;The code in the current directory: {0} with a SHA of: {1} is not the same as the code that the celery workers are running: {2} with a SHA of {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">shasum_for_current_directory</span><span class="p">,</span> <span class="n">worker_code_path</span><span class="p">,</span> <span class="n">shasum_for_celery_worker_code_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">shasum_for_current_directory</span><span class="p">,</span> \
+            <span class="n">shasum_for_celery_worker_code_path</span><span class="p">,</span> \
+            <span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Verify that all queues defined in Django settings are being serviced by a celery worker.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">stats</span>
+        <span class="n">worker_queues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;queue&#39;</span><span class="p">]:</span>
+                <span class="n">worker_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">worker_queues_distinct</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">worker_queues</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;settings.CELERY_QUEUES: {0} celery worker queues: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">worker_queues_distinct</span><span class="p">))</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;settings.CELERY_QUEUES: {0} isn&#39;t the same as worker queues: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">worker_queues_distinct</span><span class="p">)</span>
+        <span class="n">queue_worker_settings_intersect_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">worker_queues_distinct</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">queue_worker_settings_intersect_length</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_6_send_a_message_to_every_queue"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_6_send_a_message_to_every_queue">[docs]</a>    <span class="k">def</span> <span class="nf">test_6_send_a_message_to_every_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="sd">&quot;&quot;&quot;Send a message to every queue configured in Django settings.&quot;&quot;&quot;</span>
+       <span class="k">global</span> <span class="n">stats</span>
+       <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="p">:</span>
+           <span class="n">add</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">q</span>
+           <span class="n">sum_result</span> <span class="o">=</span> <span class="n">get_result_of_task</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+           <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Executing a task to add 1 + 2 for queue {0}.  Result: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">sum_result</span><span class="p">))</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sum_result</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s">&quot;Task to add 1 + 2 for queue {0} didn&#39;t execute successfully.  Result: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">sum_result</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_7_celerybeat"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_7_celerybeat">[docs]</a>    <span class="k">def</span> <span class="nf">test_7_celerybeat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="sd">&quot;&quot;&quot;Test Celery Beat by checking to see if a specific task has executed within the last 5 seconds.&quot;&quot;&quot;</span>
+       <span class="k">global</span> <span class="n">stats</span>
+       <span class="n">worker_queues</span> <span class="o">=</span> <span class="p">[]</span>
+       <span class="n">celerybeat_tasks</span> <span class="o">=</span> <span class="p">{}</span>
+       <span class="n">celerybeat_tasks_delta</span> <span class="o">=</span> <span class="p">{}</span>
+       <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+           <span class="k">try</span><span class="p">:</span>
+                <span class="n">celerybeat_tasks</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">workername</span> <span class="p">:</span> <span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;total&#39;</span><span class="p">][</span><span class="s">&#39;sanity.tasks.celerybeat_test&#39;</span><span class="p">]})</span>
+           <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+       <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+       <span class="n">stats_delta</span> <span class="o">=</span> <span class="n">get_celery_stats</span><span class="p">()</span>
+       <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">stats_delta</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+           <span class="k">try</span><span class="p">:</span>
+                <span class="n">celerybeat_tasks_delta</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">workername</span> <span class="p">:</span> <span class="n">stats_delta</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;total&#39;</span><span class="p">][</span><span class="s">&#39;sanity.tasks.celerybeat_test&#39;</span><span class="p">]})</span>
+           <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+       <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">celerybeat_tasks</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+           <span class="k">if</span> <span class="n">celerybeat_tasks</span><span class="p">[</span><span class="n">workername</span><span class="p">]</span> <span class="o">!=</span> <span class="n">celerybeat_tasks_delta</span><span class="p">[</span><span class="n">workername</span><span class="p">]:</span>
+              <span class="k">return</span>
+       <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Celery Beat has failed because it hasn&#39;t executed the sanity.tasks.celerybeat_test task in at least 5 seconds.  Here are the stats of the number of times the sanity.tasks.celerybeat_test task was executed as of 5 seconds ago: </span><span class="si">%s</span><span class="s"> and here are the stats taken 5 seconds after: </span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">celerybeat_tasks</span><span class="p">,</span> <span class="n">celerybeat_tasks_delta</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TestCelery.test_8_celery_logs"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_8_celery_logs">[docs]</a>    <span class="k">def</span> <span class="nf">test_8_celery_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test celery logs by writing &#39;Sanity Check&#39; to each log.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">stats</span>
+        <span class="n">worker_logs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">log_message</span> <span class="o">=</span> <span class="s">&#39;Sanity Check&#39;</span>
+        <span class="k">for</span> <span class="n">workername</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;log_file&#39;</span><span class="p">]:</span>
+                <span class="n">worker_logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;log_file&#39;</span><span class="p">])</span>
+        <span class="n">worker_logs_distinct</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">worker_logs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">celery_logs</span> <span class="o">=</span> <span class="n">worker_logs_distinct</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERYD_LOG_FILE</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">celery_logs</span> <span class="o">=</span> <span class="n">worker_logs_distinct</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="ow">not</span> <span class="n">celery_logs</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Can&#39;t find any logs for celery in settings.CELERYD_LOG_FILE or for the celery workers.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">celery_logs</span><span class="p">:</span>
+            <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Writing {0} to the the following log: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_message</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_result_of_task</span><span class="p">(</span><span class="n">write_to_file</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">log_message</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&quot;Cannot&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">result</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">django-sanity v1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Rob Combs.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

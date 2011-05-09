@@ -10,9 +10,9 @@ def read(fname):
 
 setup(
     name = "django-sanity",
-    version = "0.0.1",
-    author = "Cox Media Group Digital",
-    author_email = "clay@daemons.net",
+    version = "1.0",
+    author = "Rob Combs, Richard Bronosky, Clay Mcclure, Matt Anderson",
+    author_email = "robert.combs@cmgdigital.com",
     description = "Django management command for determining if resources are sane within the context of an environment.",
     keywords = "sanity",
     packages = ['sanity'],

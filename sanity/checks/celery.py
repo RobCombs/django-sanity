@@ -1,10 +1,9 @@
-""" sanity.tests
+""" sanity.checks.celery
 
-      Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, which
-      is provided by python 2.7 and greater.
+Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, 
+which is provided by python 2.7 and greater.
 
 """
-
 import logging
 import unittest
 import sys

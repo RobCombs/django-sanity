@@ -3,7 +3,6 @@
 All shared global variables should be defined here.
 
 """
-
 DEFAULT_CELERY_TIMEOUT = 10
 
 CELERY_TIMEOUT = 0
