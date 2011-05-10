@@ -1,7 +1,6 @@
 *****************************************
 Welcome to django-sanity's documentation!
 *****************************************
-
 :Authors: Rob Combs, Richard Bronosky, Clay Mcclure, Matt Anderson
 :Copyright: 2011 Cox Media Group.
 :Contact: robert.combs@cmgdigital.com

@@ -102,7 +102,6 @@ To run a suite of all(Celery and a mock Solr test for now) of sane's unit tests,
 ===============
 Troubleshooting
 ===============
-
 * If you get a "not found error" when running django-admin.py(python management.py) sane, then go to the django-sanity repo and run python setup.py develop   to register it in your python path. You can also do pip install -U -r ${django-sanity repo url}.
 * if you are seeing errors(over 4 or so) when running django-sanity sane celery, look at the celery logs.  If you see any exceptions
   related to 'sanity' tasks, then restart your celery workers to register the updated code for django-sanity.  Specifically speaking,
@@ -111,7 +110,6 @@ Troubleshooting
 =================
 Sane help listing
 =================
-
 USAGE:
 You can execute django-admin.py sane --help or --h to get an output of the usage.  Here is a copy and paste of that output. 
 Usage: /Users/rcombs/devel/cms_aa/bin/django-admin.py sane <resource1 resource2 ...> [--celery_timeout] or
@@ -196,7 +194,6 @@ django-sanity will be a comprehensive resource diagnostic tool.  The following l
 ==============
 Other Thoughts
 ==============
-
 - services we still need to elaborate
   - hudson slaves
   - host config (/etc/hosts, /etc/resolv.conf, /etc/sudoers, /etc/\*)

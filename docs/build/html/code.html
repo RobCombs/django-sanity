@@ -56,7 +56,7 @@
 <tt class="descclassname">sanity.management.commands.sane.</tt><tt class="descname">harvest_sanity_settings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sanity/management/commands/sane.html#harvest_sanity_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.management.commands.sane.harvest_sanity_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reap sanity specific settings used for customizing sanity related tests.</p>
 <p>For any configurations that you&#8217;d like to pass to django-sanity, just name space them
-with a &#8216;<a href="#id5"><span class="problematic" id="id6">SANITY_</span></a>&#8216; string and put them in Django settings.  This adds a great amount of flexibility
+with a &#8216;SANITY_&#8217; string and put them in Django settings.  This adds a great amount of flexibility
 to the django-sanity framework for customized testing.  SANITY_CELERY_TIMEOUT is an example of how
 we are using this concept for a custom timeout option for tests.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -65,7 +65,7 @@ we are using this concept for a custom timeout option for tests.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">dict &#8211; All keyword pairs that start with &#8216;<a href="#id7"><span class="problematic" id="id8">SANITY_</span></a>&#8216; in Django settings.</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">dict &#8211; All keyword pairs that start with &#8216;SANITY_&#8217; in Django settings.</td>
 </tr>
 <tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
 </tr>
@@ -198,8 +198,8 @@ assumption to extract the queue name.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>task</strong> (<em>str.</em>) &#8211; The name of the Celery task.</li>
-<li><strong>args</strong> (<a href="#id1"><span class="problematic" id="id2">*</span></a>args) &#8211; Args to pass to the Celery task.</li>
-<li><strong>kwargs</strong> (<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs) &#8211; Keyword args to pass to the Celery task.</li>
+<li><strong>args</strong> (<em>*args</em>) &#8211; Args to pass to the Celery task.</li>
+<li><strong>kwargs</strong> (<em>**kwargs</em>) &#8211; Keyword args to pass to the Celery task.</li>
 </ul>
 </td>
 </tr>
@@ -256,127 +256,6 @@ for comparisons to ensure that 2 or more directories have the same code.</p>
 <span id="sanity-tasks"></span><h3>sanity.tasks<a class="headerlink" href="#module-sanity.tasks" title="Permalink to this headline">¶</a></h3>
 <p>sanity.tasks</p>
 <p>Tasks used for testing Celery.</p>
-<dl class="function">
-<dt id="sanity.tasks.add">
-<tt class="descclassname">sanity.tasks.</tt><tt class="descname">add</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/sanity/tasks.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the sum of x and y.</p>
-<p>Return the sum of x and y by way of a Celery worker tasks.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>str.</em>) &#8211; Any randon number 1.</li>
-<li><strong>y</strong> (<em>str.</em>) &#8211; Any randon number 2.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">int &#8211; the sum of x and y.</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Handles :</th><td class="field-body"><p class="first">None</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">None</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="sanity.tasks.celerybeat_test">
-<tt class="descclassname">sanity.tasks.</tt><tt class="descname">celerybeat_test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sanity/tasks.html#celerybeat_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.celerybeat_test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return true.</p>
-<p>Lightweight Celery Beat task that let&#8217;s us know it&#8217;s still alive.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">bool &#8211; Always return true.</td>
-</tr>
-<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="sanity.tasks.get_cmdline">
-<tt class="descclassname">sanity.tasks.</tt><tt class="descname">get_cmdline</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/sanity/tasks.html#get_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.get_cmdline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the command of a pid.</p>
-<p>Return the command of a pid.  This is code will be used to get more information from the
-Celery workers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>str.</em>) &#8211; Look up the command by the pid.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The command.</td>
-</tr>
-<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">A ValueError will be raised if Popen is called with invalid arguments.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="sanity.tasks.get_shasum_for_celery_worker_code_path">
-<tt class="descclassname">sanity.tasks.</tt><tt class="descname">get_shasum_for_celery_worker_code_path</tt><big>(</big><em>code_path</em><big>)</big><a class="reference internal" href="_modules/sanity/tasks.html#get_shasum_for_celery_worker_code_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.get_shasum_for_celery_worker_code_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the shasum of a directory.</p>
-<p>Use the sha1sum module to calculate the hash for the directory passed in.  This hash will be used
-for comparisons to ensure that 2 or more directories have the same code.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code_path</strong> (<em>str.</em>) &#8211; Directory to generate a shasum hash for.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The shasum of the directory passed in.</td>
-</tr>
-<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">A ValueError will be raised if Popen is called with invalid arguments.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="sanity.tasks.write_to_file">
-<tt class="descclassname">sanity.tasks.</tt><tt class="descname">write_to_file</tt><big>(</big><em>file</em>, <em>message</em><big>)</big><a class="reference internal" href="_modules/sanity/tasks.html#write_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.write_to_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write a message to a file.</p>
-<p>Write a message to a file using Celery.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file</strong> (<em>str.</em>) &#8211; File to write to.</li>
-<li><strong>message</strong> (<em>str.</em>) &#8211; Message to write to file.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">str &#8211; The message or exception written to the file.</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Handles :</th><td class="field-body"><p class="first">IOError</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">None</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 </div>
 <div class="section" id="celery-unit-tests-code-reference">
