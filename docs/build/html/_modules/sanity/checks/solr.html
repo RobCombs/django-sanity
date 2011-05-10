@@ -46,21 +46,29 @@
           <div class="body">
             
   <h1>Source code for sanity.checks.solr</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; sanity.checks.solr</span>
+
+<span class="sd">Home for Solr related environment tests.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 
-<div class="viewcode-block" id="TestSolr"><a class="viewcode-back" href="../../../code.html#sanity.checks.solr.TestSolr">[docs]</a><span class="k">class</span> <span class="nc">TestSolr</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TestSolr"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.solr.TestSolr">[docs]</a><span class="k">class</span> <span class="nc">TestSolr</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Test Solr.</span>
+<span class="sd">    </span>
 <span class="sd">    Home for Solr related environment tests</span>
 <span class="sd">    MUST DO: ADD MAORR TESTS</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c">#put pre-test prerequisites here</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="TestSolr.test_solr_equality"><a class="viewcode-back" href="../../../code.html#sanity.checks.solr.TestSolr.test_solr_equality">[docs]</a>    <span class="k">def</span> <span class="nf">test_solr_equality</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mock Solr test.</span>
-<span class="sd">        Tests that 1 + 1 always equals 2.</span>
+<div class="viewcode-block" id="TestSolr.test_solr_equality"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.solr.TestSolr.test_solr_equality">[docs]</a>    <span class="k">def</span> <span class="nf">test_solr_equality</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Test equality.</span>
+<span class="sd">        </span>
+<span class="sd">        Mock Solr test to ensure that 1 + 1 always equals 2.  Let&#39;s see what happens.</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">failUnlessEqual</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div></div>
 </pre></div>

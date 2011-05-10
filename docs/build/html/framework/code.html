@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django-sanity code reference &mdash; django-sanity v1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="django-sanity v1.0 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">django-sanity v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="django-sanity-code-reference">
+<h1>django-sanity code reference<a class="headerlink" href="#django-sanity-code-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="sanity-framework-code-reference">
+<h2>Sanity framework code reference<a class="headerlink" href="#sanity-framework-code-reference" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sanity.management.commands.sane">
+<span id="sanity-management"></span><h3>sanity.management<a class="headerlink" href="#module-sanity.management.commands.sane" title="Permalink to this headline">¶</a></h3>
+<p>sanity.management</p>
+<p>Sane management command that runs the related tests for the environment resource passed to it.</p>
+<dl class="function">
+<dt id="sanity.management.commands.sane.harvest_sanity_settings">
+<tt class="descclassname">sanity.management.commands.sane.</tt><tt class="descname">harvest_sanity_settings</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/management/commands/sane.html#harvest_sanity_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.management.commands.sane.harvest_sanity_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reap sanity specific settings used for customizing sanity related tests.</p>
+<p>For any configurations that you&#8217;d like to pass to django-sanity, just name space them
+with a &#8216;SANITY_&#8217; string and put them in Django settings.  This adds a great amount of flexibility
+to the django-sanity framework for customized testing.  SANITY_CELERY_TIMEOUT is an example of how
+we are using this concept for a custom timeout option for tests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">dict &#8211; All keyword pairs that start with &#8216;SANITY_&#8217; in Django settings.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ValueError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.management.commands.sane.Command">
+<em class="property">class </em><tt class="descclassname">sanity.management.commands.sane.</tt><tt class="descname">Command</tt><a class="reference internal" href="../_modules/sanity/management/commands/sane.html#Command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.management.commands.sane.Command" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="sanity.management.commands.sane.Command.handle">
+<tt class="descname">handle</tt><big>(</big><em>*args</em>, <em>**options</em><big>)</big><a class="reference internal" href="../_modules/sanity/management/commands/sane.html#Command.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.management.commands.sane.Command.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the Django command.</p>
+<p>Match the args to the appropriate tests and kick off the test suite runner.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sanity.toolbox">
+<span id="sanity-toolbox"></span><h3>sanity.toolbox<a class="headerlink" href="#module-sanity.toolbox" title="Permalink to this headline">¶</a></h3>
+<p>sanity.toolbox</p>
+<p>Common utilities for SANE.</p>
+<dl class="function">
+<dt id="sanity.toolbox.get_celery_daemon_code_path">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_celery_daemon_code_path</tt><big>(</big><em>celery_daemon</em><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_celery_daemon_code_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_celery_daemon_code_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the celery worker code path from the argument and return it.</p>
+<p>Celery workers use the -pythonpath flag to indicate that the argument 
+following it will be a code path.  This function relies on that
+assumption to extract the code path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>celery_daemon</strong> (<em>str.</em>) &#8211; The command string used to start the celery worker.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The celery worker code path.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ValueError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.get_celery_daemon_log">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_celery_daemon_log</tt><big>(</big><em>celery_daemon</em><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_celery_daemon_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_celery_daemon_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the celery worker log path from the argument and return it.</p>
+<p>Celery workers use the -f flag to indicate that the argument 
+following it will be a log file.  This function relies on that
+assumption to extract the log file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>celery_daemon</strong> (<em>str.</em>) &#8211; The command string used to start the celery worker.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The celery worker log path.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">ValueError</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.get_celery_daemon_queue">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_celery_daemon_queue</tt><big>(</big><em>celery_daemon</em><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_celery_daemon_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_celery_daemon_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the celery worker queue name from the argument and return it.</p>
+<p>Celery workers use the -Q flag to indicate that the argument 
+following it will be the queue that it&#8217;s using.  This function relies on that
+assumption to extract the queue name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>celery_daemon</strong> (<em>str.</em>) &#8211; The command string used to start the celery worker.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The celery worker queue.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">ValueError</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.get_celery_stats">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_celery_stats</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_celery_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_celery_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict consisting of the Celery stats.Extract the celery queue from the argument and return it.</p>
+<p>Use the celery.task.control api to inspect the Celery workers for stats and return them into a dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li>int &#8211; -1 means cannot connect to the the Rabbit MQ server.</li>
+<li>str &#8211; Empty str means there are no celery workers running.</li>
+<li>dict &#8211; A dict consisting of the stats.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">timeout</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.get_result_of_task">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_result_of_task</tt><big>(</big><em>task</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_result_of_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_result_of_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the result of a Celery task</p>
+<p>Wait for Celery task to complete and then pull the result from the async object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>task</strong> (<em>str.</em>) &#8211; The name of the Celery task.</li>
+<li><strong>args</strong> (<em>*args</em>) &#8211; Args to pass to the Celery task.</li>
+<li><strong>kwargs</strong> (<em>**kwargs</em>) &#8211; Keyword args to pass to the Celery task.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">str &#8211; The result of the task.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body"><p class="first">None</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">timeout</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.get_shasum_for_current_directory">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">get_shasum_for_current_directory</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#get_shasum_for_current_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.get_shasum_for_current_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the shasum of a directory.</p>
+<p>Use the sha1sum module to calculate the hash for the current directory.  This hash will be used
+for comparisons to ensure that 2 or more directories have the same code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The shasum of the current directory.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">A ValueError will be raised if Popen is called with invalid arguments.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.is_open">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">is_open</tt><big>(</big><em>ip</em>, <em>port</em><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#is_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.is_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>..or would you prefer i use nmap?</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sanity.toolbox.print_django_celery_config">
+<tt class="descclassname">sanity.toolbox.</tt><tt class="descname">print_django_celery_config</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/toolbox.html#print_django_celery_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.toolbox.print_django_celery_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the Dango Celery Config.</p>
+<p>Loop through the Django settings file for celery related variables and then print them.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sanity.tasks">
+<span id="sanity-tasks"></span><h3>sanity.tasks<a class="headerlink" href="#module-sanity.tasks" title="Permalink to this headline">¶</a></h3>
+<p>sanity.tasks</p>
+<p>Tasks used for testing Celery.</p>
+<dl class="class">
+<dt id="sanity.tasks.add">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">add</tt><a class="reference internal" href="../_modules/sanity/tasks.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sum of x and y.</p>
+<p>Return the sum of x and y by way of a Celery worker tasks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>str.</em>) &#8211; Any randon number 1.</li>
+<li><strong>y</strong> (<em>str.</em>) &#8211; Any randon number 2.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">int &#8211; the sum of x and y.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body"><p class="first">None</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.tasks.get_cmdline">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">get_cmdline</tt><a class="reference internal" href="../_modules/sanity/tasks.html#get_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.get_cmdline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the command of a pid.</p>
+<p>Return the command of a pid.  This is code will be used to get more information from the
+Celery workers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>str.</em>) &#8211; Look up the command by the pid.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The command.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">A ValueError will be raised if Popen is called with invalid arguments.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.tasks.write_to_file">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">write_to_file</tt><a class="reference internal" href="../_modules/sanity/tasks.html#write_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.write_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a message to a file.</p>
+<p>Write a message to a file using Celery.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> (<em>str.</em>) &#8211; File to write to.</li>
+<li><strong>message</strong> (<em>str.</em>) &#8211; Message to write to file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">str &#8211; The message or exception written to the file.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body"><p class="first">IOError</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.tasks.get_shasum_for_celery_worker_code_path">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">get_shasum_for_celery_worker_code_path</tt><a class="reference internal" href="../_modules/sanity/tasks.html#get_shasum_for_celery_worker_code_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.get_shasum_for_celery_worker_code_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the shasum of a directory.</p>
+<p>Use the sha1sum module to calculate the hash for the directory passed in.  This hash will be used
+for comparisons to ensure that 2 or more directories have the same code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code_path</strong> (<em>str.</em>) &#8211; Directory to generate a shasum hash for.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; The shasum of the directory passed in.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">A ValueError will be raised if Popen is called with invalid arguments.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.tasks.celerybeat_test">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">celerybeat_test</tt><a class="reference internal" href="../_modules/sanity/tasks.html#celerybeat_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.celerybeat_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true.</p>
+<p>Lightweight Celery Beat task that let&#8217;s us know it&#8217;s still alive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">bool &#8211; Always return true.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="sanity.tasks.get_server">
+<em class="property">class </em><tt class="descclassname">sanity.tasks.</tt><tt class="descname">get_server</tt><a class="reference internal" href="../_modules/sanity/tasks.html#get_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.tasks.get_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return server information.</p>
+<p>Get all of the related server information from the machine that the Celery worker is runnning on.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> &#8211; No args.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">dict &#8211; host, build, port, etc.</td>
+</tr>
+<tr class="field"><th class="field-name">Handles :</th><td class="field-body">None</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">OSError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="celery-unit-tests-code-reference">
+<h2>Celery unit tests code reference<a class="headerlink" href="#celery-unit-tests-code-reference" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sanity.checks.celery">
+<span id="sanity-checks-celery"></span><h3>sanity.checks.celery<a class="headerlink" href="#module-sanity.checks.celery" title="Permalink to this headline">¶</a></h3>
+<p>sanity.checks.celery</p>
+<p>Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, 
+which is provided by python 2.7 and greater.</p>
+<dl class="class">
+<dt id="sanity.checks.celery.TestCelery">
+<em class="property">class </em><tt class="descclassname">sanity.checks.celery.</tt><tt class="descname">TestCelery</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_0_init">
+<tt class="descname">test_0_init</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_0_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_0_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the initialization of the test suite by retrieving and printing the celery stats.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_1_celery_imports">
+<tt class="descname">test_1_celery_imports</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_1_celery_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_1_celery_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Let&#8217;s make sure that we can import all of the celery imports defined in settings.CELERY_IMPORTS.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_2_talk_to_the_rabbitmq_server">
+<tt class="descname">test_2_talk_to_the_rabbitmq_server</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_2_talk_to_the_rabbitmq_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_2_talk_to_the_rabbitmq_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that we can connect to and authenticate against the RabbitMQ server using Django&#8217;s BROKER settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running">
+<tt class="descname">test_3_verify_that_there_is_at_least_one_celeryd_worker_running</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see if there is at least one celery worker running to process tasks.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_4_source_code_of_celery_workers">
+<tt class="descname">test_4_source_code_of_celery_workers</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_4_source_code_of_celery_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_4_source_code_of_celery_workers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that the celery workers are running the correct code by verifying that the code in the current directory matches the code
+that the celery workers are running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers">
+<tt class="descname">test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that all queues defined in Django settings are being serviced by a celery worker.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_6_send_a_message_to_every_queue">
+<tt class="descname">test_6_send_a_message_to_every_queue</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_6_send_a_message_to_every_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_6_send_a_message_to_every_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to every queue configured in Django settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_7_celerybeat">
+<tt class="descname">test_7_celerybeat</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_7_celerybeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_7_celerybeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test Celery Beat by checking to see if a specific task has executed within the last 5 seconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sanity.checks.celery.TestCelery.test_8_celery_logs">
+<tt class="descname">test_8_celery_logs</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/celery.html#TestCelery.test_8_celery_logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.celery.TestCelery.test_8_celery_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test celery logs by writing &#8216;Sanity Check&#8217; to each log.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="solr-unit-tests-code-reference">
+<h2>Solr unit tests code reference<a class="headerlink" href="#solr-unit-tests-code-reference" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-sanity.checks.solr">
+<span id="sanity-checks-solr"></span><h3>sanity.checks.solr<a class="headerlink" href="#module-sanity.checks.solr" title="Permalink to this headline">¶</a></h3>
+<p>sanity.checks.solr</p>
+<p>Home for Solr related environment tests.</p>
+<dl class="class">
+<dt id="sanity.checks.solr.TestSolr">
+<em class="property">class </em><tt class="descclassname">sanity.checks.solr.</tt><tt class="descname">TestSolr</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/sanity/checks/solr.html#TestSolr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.solr.TestSolr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test Solr.</p>
+<p>Home for Solr related environment tests
+MUST DO: ADD MAORR TESTS</p>
+<dl class="method">
+<dt id="sanity.checks.solr.TestSolr.test_solr_equality">
+<tt class="descname">test_solr_equality</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/sanity/checks/solr.html#TestSolr.test_solr_equality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sanity.checks.solr.TestSolr.test_solr_equality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test equality.</p>
+<p>Mock Solr test to ensure that 1 + 1 always equals 2.  Let&#8217;s see what happens.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">django-sanity code reference</a><ul>
+<li><a class="reference internal" href="#sanity-framework-code-reference">Sanity framework code reference</a><ul>
+<li><a class="reference internal" href="#module-sanity.management.commands.sane">sanity.management</a></li>
+<li><a class="reference internal" href="#module-sanity.toolbox">sanity.toolbox</a></li>
+<li><a class="reference internal" href="#module-sanity.tasks">sanity.tasks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#celery-unit-tests-code-reference">Celery unit tests code reference</a><ul>
+<li><a class="reference internal" href="#module-sanity.checks.celery">sanity.checks.celery</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#solr-unit-tests-code-reference">Solr unit tests code reference</a><ul>
+<li><a class="reference internal" href="#module-sanity.checks.solr">sanity.checks.solr</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/framework/code.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">django-sanity v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Rob Combs.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

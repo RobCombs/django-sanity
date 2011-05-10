@@ -142,9 +142,9 @@ def get_result_of_task(task, *args, **kwargs):
     :param task: The name of the Celery task.
     :type task: str.
     :param args: Args to pass to the Celery task.
-    :type args: *args
+    :type args: \*args
     :param kwargs: Keyword args to pass to the Celery task.
-    :type kwargs: **kwargs
+    :type kwargs: \*\*kwargs
     :returns:  str -- The result of the task.
     :handles: None
     :raises: timeout

@@ -48,10 +48,9 @@
   <h1>Source code for sanity.tasks</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot; sanity.tasks</span>
 
-<span class="sd">Tasks used for testing Celery</span>
+<span class="sd">Tasks used for testing Celery.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
@@ -59,7 +58,9 @@
 
 
 <span class="c">#written for Celery version 2.1.4.  Refer to the Celery docs for API changes: http://readthedocs.org/docs/celery </span>
-<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../code.html#sanity.tasks.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+
+<span class="nd">@task</span>
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return the sum of x and y.</span>
 <span class="sd">    </span>
 <span class="sd">    Return the sum of x and y by way of a Celery worker tasks.</span>
@@ -76,7 +77,7 @@
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 </div>
 <span class="nd">@task</span>
-<div class="viewcode-block" id="get_cmdline"><a class="viewcode-back" href="../../code.html#sanity.tasks.get_cmdline">[docs]</a><span class="k">def</span> <span class="nf">get_cmdline</span><span class="p">(</span><span class="n">pid</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cmdline"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.get_cmdline">[docs]</a><span class="k">def</span> <span class="nf">get_cmdline</span><span class="p">(</span><span class="n">pid</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return the command of a pid.</span>
 <span class="sd">    </span>
 <span class="sd">    Return the command of a pid.  This is code will be used to get more information from the</span>
@@ -95,7 +96,7 @@
     <span class="k">return</span> <span class="n">cmdline</span>
 </div>
 <span class="nd">@task</span>
-<div class="viewcode-block" id="write_to_file"><a class="viewcode-back" href="../../code.html#sanity.tasks.write_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="write_to_file"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.write_to_file">[docs]</a><span class="k">def</span> <span class="nf">write_to_file</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Write a message to a file.</span>
 <span class="sd">    </span>
 <span class="sd">    Write a message to a file using Celery.</span>
@@ -104,7 +105,7 @@
 <span class="sd">    :type file: str.</span>
 <span class="sd">    :param message: Message to write to file.</span>
 <span class="sd">    :type message: str.</span>
-<span class="sd">    :returns:  str -- The message written to the file or the exception.</span>
+<span class="sd">    :returns:  str -- The message or exception written to the file.</span>
 <span class="sd">    :handles: IOError</span>
 <span class="sd">    :raises: None</span>
 <span class="sd">    </span>
@@ -120,7 +121,7 @@
         <span class="k">return</span> <span class="s">&quot;Cannot access file {0}: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
 </div>
 <span class="nd">@task</span>
-<div class="viewcode-block" id="get_shasum_for_celery_worker_code_path"><a class="viewcode-back" href="../../code.html#sanity.tasks.get_shasum_for_celery_worker_code_path">[docs]</a><span class="k">def</span> <span class="nf">get_shasum_for_celery_worker_code_path</span><span class="p">(</span><span class="n">code_path</span><span class="p">):</span>
+<div class="viewcode-block" id="get_shasum_for_celery_worker_code_path"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.get_shasum_for_celery_worker_code_path">[docs]</a><span class="k">def</span> <span class="nf">get_shasum_for_celery_worker_code_path</span><span class="p">(</span><span class="n">code_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Get the shasum of a directory.</span>
 <span class="sd">    </span>
 <span class="sd">    Use the sha1sum module to calculate the hash for the directory passed in.  This hash will be used</span>
@@ -139,7 +140,7 @@
     <span class="k">return</span> <span class="n">shasum</span>
 </div>
 <span class="nd">@task</span>
-<div class="viewcode-block" id="celerybeat_test"><a class="viewcode-back" href="../../code.html#sanity.tasks.celerybeat_test">[docs]</a><span class="k">def</span> <span class="nf">celerybeat_test</span><span class="p">():</span>
+<div class="viewcode-block" id="celerybeat_test"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.celerybeat_test">[docs]</a><span class="k">def</span> <span class="nf">celerybeat_test</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Return true.</span>
 <span class="sd">    </span>
 <span class="sd">    Lightweight Celery Beat task that let&#39;s us know it&#39;s still alive.</span>
@@ -153,8 +154,18 @@
     <span class="k">return</span> <span class="bp">True</span>
         </div>
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">get_server</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">uname</span><span class="p">()</span>
+<div class="viewcode-block" id="get_server"><a class="viewcode-back" href="../../framework/code.html#sanity.tasks.get_server">[docs]</a><span class="k">def</span> <span class="nf">get_server</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Return server information.</span>
+<span class="sd">    </span>
+<span class="sd">    Get all of the related server information from the machine that the Celery worker is runnning on.</span>
+<span class="sd">    </span>
+<span class="sd">    :param None: No args.</span>
+<span class="sd">    :returns:  dict -- host, build, port, etc.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: OSError</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">uname</span><span class="p">()</span></div>
 </pre></div>
 
           </div>

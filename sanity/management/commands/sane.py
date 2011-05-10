@@ -28,12 +28,12 @@ def harvest_sanity_settings():
     Reap sanity specific settings used for customizing sanity related tests.
 
     For any configurations that you'd like to pass to django-sanity, just name space them
-    with a 'SANITY_' string and put them in Django settings.  This adds a great amount of flexibility
+    with a 'SANITY\_' string and put them in Django settings.  This adds a great amount of flexibility
     to the django-sanity framework for customized testing.  SANITY_CELERY_TIMEOUT is an example of how
     we are using this concept for a custom timeout option for tests.
 
     :param None: No args.
-    :returns:  dict -- All keyword pairs that start with 'SANITY_' in Django settings.
+    :returns:  dict -- All keyword pairs that start with 'SANITY\_' in Django settings.
     :handles: None
     :raises: ValueError
     

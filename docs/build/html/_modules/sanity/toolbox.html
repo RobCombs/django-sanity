@@ -48,10 +48,9 @@
   <h1>Source code for sanity.toolbox</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot; sanity.toolbox</span>
 
-<span class="sd">      common utilities for SANE</span>
+<span class="sd">Common utilities for SANE.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
@@ -64,7 +63,7 @@
 <span class="kn">from</span> <span class="nn">sanity</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">sanity.tasks</span> <span class="kn">import</span> <span class="n">get_cmdline</span><span class="p">,</span> <span class="n">get_server</span>
 
-<div class="viewcode-block" id="is_open"><a class="viewcode-back" href="../../code.html#sanity.toolbox.is_open">[docs]</a><span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+<div class="viewcode-block" id="is_open"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.is_open">[docs]</a><span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; ..or would you prefer i use nmap? &quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -74,7 +73,7 @@
     <span class="k">except</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">False</span>
 </div>
-<div class="viewcode-block" id="get_celery_daemon_code_path"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_celery_daemon_code_path">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_code_path</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
+<div class="viewcode-block" id="get_celery_daemon_code_path"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_celery_daemon_code_path">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_code_path</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Extract the celery worker code path from the argument and return it.</span>
 <span class="sd">    </span>
 <span class="sd">    Celery workers use the -pythonpath flag to indicate that the argument </span>
@@ -95,7 +94,7 @@
             <span class="n">celery_daemon_code_path</span> <span class="o">=</span> <span class="n">celery_daemon_bits</span><span class="p">[</span><span class="n">celery_daemon_bits</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">celery_daemon_code_path</span>
 </div>
-<div class="viewcode-block" id="get_celery_daemon_log"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_celery_daemon_log">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_log</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
+<div class="viewcode-block" id="get_celery_daemon_log"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_celery_daemon_log">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_log</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Extract the celery worker log path from the argument and return it.</span>
 <span class="sd">    </span>
 <span class="sd">    Celery workers use the -f flag to indicate that the argument </span>
@@ -115,7 +114,7 @@
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
        <span class="k">return</span> <span class="s">&#39;&#39;</span>
 </div>
-<div class="viewcode-block" id="get_celery_daemon_queue"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_celery_daemon_queue">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_queue</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
+<div class="viewcode-block" id="get_celery_daemon_queue"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_celery_daemon_queue">[docs]</a><span class="k">def</span> <span class="nf">get_celery_daemon_queue</span><span class="p">(</span><span class="n">celery_daemon</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Extract the celery worker queue name from the argument and return it.</span>
 <span class="sd">    </span>
 <span class="sd">    Celery workers use the -Q flag to indicate that the argument </span>
@@ -137,7 +136,7 @@
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="print_django_celery_config"><a class="viewcode-back" href="../../code.html#sanity.toolbox.print_django_celery_config">[docs]</a><span class="k">def</span> <span class="nf">print_django_celery_config</span><span class="p">():</span>
+<div class="viewcode-block" id="print_django_celery_config"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.print_django_celery_config">[docs]</a><span class="k">def</span> <span class="nf">print_django_celery_config</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Print the Dango Celery Config.</span>
 <span class="sd">    </span>
 <span class="sd">    Loop through the Django settings file for celery related variables and then print them.</span>
@@ -148,7 +147,7 @@
     <span class="n">celery_dict</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_wrapped&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;CELERY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;BROKER&#39;</span><span class="p">)]</span>
     <span class="n">pprint</span><span class="p">(</span><span class="n">celery_dict</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="get_celery_stats"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_celery_stats">[docs]</a><span class="k">def</span> <span class="nf">get_celery_stats</span><span class="p">():</span>
+<div class="viewcode-block" id="get_celery_stats"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_celery_stats">[docs]</a><span class="k">def</span> <span class="nf">get_celery_stats</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Return a dict consisting of the Celery stats.Extract the celery queue from the argument and return it.</span>
 
 <span class="sd">     Use the celery.task.control api to inspect the Celery workers for stats and return them into a dict.</span>
@@ -183,7 +182,7 @@
         <span class="n">stats</span><span class="p">[</span><span class="n">workername</span><span class="p">][</span><span class="s">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
     <span class="k">return</span> <span class="n">stats</span>
 </div>
-<div class="viewcode-block" id="get_result_of_task"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_result_of_task">[docs]</a><span class="k">def</span> <span class="nf">get_result_of_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="get_result_of_task"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_result_of_task">[docs]</a><span class="k">def</span> <span class="nf">get_result_of_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Get the result of a Celery task</span>
 <span class="sd">    </span>
 <span class="sd">    Wait for Celery task to complete and then pull the result from the async object.</span>
@@ -191,9 +190,9 @@
 <span class="sd">    :param task: The name of the Celery task.</span>
 <span class="sd">    :type task: str.</span>
 <span class="sd">    :param args: Args to pass to the Celery task.</span>
-<span class="sd">    :type args: *args</span>
+<span class="sd">    :type args: \*args</span>
 <span class="sd">    :param kwargs: Keyword args to pass to the Celery task.</span>
-<span class="sd">    :type kwargs: **kwargs</span>
+<span class="sd">    :type kwargs: \*\*kwargs</span>
 <span class="sd">    :returns:  str -- The result of the task.</span>
 <span class="sd">    :handles: None</span>
 <span class="sd">    :raises: timeout</span>
@@ -206,7 +205,7 @@
        <span class="n">response</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">CELERY_TIMEOUT</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">result</span>
 </div>
-<div class="viewcode-block" id="get_shasum_for_current_directory"><a class="viewcode-back" href="../../code.html#sanity.toolbox.get_shasum_for_current_directory">[docs]</a><span class="k">def</span> <span class="nf">get_shasum_for_current_directory</span><span class="p">():</span>
+<div class="viewcode-block" id="get_shasum_for_current_directory"><a class="viewcode-back" href="../../framework/code.html#sanity.toolbox.get_shasum_for_current_directory">[docs]</a><span class="k">def</span> <span class="nf">get_shasum_for_current_directory</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Get the shasum of a directory.</span>
 <span class="sd">    </span>
 <span class="sd">    Use the sha1sum module to calculate the hash for the current directory.  This hash will be used</span>

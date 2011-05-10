@@ -48,11 +48,10 @@
   <h1>Source code for sanity.checks.celery</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot; sanity.checks.celery</span>
 
-<span class="sd">      Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, which</span>
-<span class="sd">      is provided by python 2.7 and greater.</span>
+<span class="sd">Home for Celery related environment tests.  We look forward in the future to taking advantage of a failfast option for the test runner, </span>
+<span class="sd">which is provided by python 2.7 and greater.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -71,13 +70,13 @@
 <span class="c">#Global stats variable that&#39;s accessed throughout the Celery test suite</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="TestCelery"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery">[docs]</a><span class="k">class</span> <span class="nc">TestCelery</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery">[docs]</a><span class="k">class</span> <span class="nc">TestCelery</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c">#put pre-test prerequisites here.</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="TestCelery.test_0_init"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_0_init">[docs]</a>    <span class="k">def</span> <span class="nf">test_0_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_0_init"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_0_init">[docs]</a>    <span class="k">def</span> <span class="nf">test_0_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test the initialization of the test suite by retrieving and printing the celery stats.&quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">stats</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">get_celery_stats</span><span class="p">()</span>
@@ -88,7 +87,7 @@
         <span class="n">pprint</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
         <span class="n">print_django_celery_config</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_1_celery_imports"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_1_celery_imports">[docs]</a>    <span class="k">def</span> <span class="nf">test_1_celery_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_1_celery_imports"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_1_celery_imports">[docs]</a>    <span class="k">def</span> <span class="nf">test_1_celery_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s">&quot;Let&#39;s make sure that we can import all of the celery imports defined in settings.CELERY_IMPORTS.&quot;</span>
         <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Celery imports: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_IMPORTS</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
@@ -96,7 +95,7 @@
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&#39;Import Error {0}: Cannot import this list {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_IMPORTS</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_2_talk_to_the_rabbitmq_server"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_2_talk_to_the_rabbitmq_server">[docs]</a>    <span class="k">def</span> <span class="nf">test_2_talk_to_the_rabbitmq_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_2_talk_to_the_rabbitmq_server"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_2_talk_to_the_rabbitmq_server">[docs]</a>    <span class="k">def</span> <span class="nf">test_2_talk_to_the_rabbitmq_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s">&quot;Verify that we can connect to and authenticate against the RabbitMQ server using Django&#39;s BROKER settings.&quot;</span>
         <span class="n">rabbitmq_settings</span> <span class="o">=</span> <span class="s">&quot;Rabbit MQ settings: host={BROKER_HOST}, port={BROKER_PORT}, userid={BROKER_USER}, password={BROKER_PASSWORD}, virtual_host={BROKER_VHOST}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_wrapped&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
         <span class="n">pprint</span><span class="p">(</span><span class="n">rabbitmq_settings</span><span class="p">)</span>
@@ -144,14 +143,14 @@
         <span class="n">chan</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running">[docs]</a>    <span class="k">def</span> <span class="nf">test_3_verify_that_there_is_at_least_one_celeryd_worker_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_3_verify_that_there_is_at_least_one_celeryd_worker_running">[docs]</a>    <span class="k">def</span> <span class="nf">test_3_verify_that_there_is_at_least_one_celeryd_worker_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check to see if there is at least one celery worker running to process tasks.&quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">stats</span>
         <span class="n">number_of_celeryd_daemons_running</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
         <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Number of celeryd worker nodes running: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number_of_celeryd_daemons_running</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">number_of_celeryd_daemons_running</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;There are no celery workers running&quot;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_4_source_code_of_celery_workers"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_4_source_code_of_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_4_source_code_of_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_4_source_code_of_celery_workers"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_4_source_code_of_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_4_source_code_of_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make sure that the celery workers are running the correct code by verifying that the code in the current directory matches the code</span>
 <span class="sd">           that the celery workers are running.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -170,7 +169,7 @@
             <span class="n">shasum_for_celery_worker_code_path</span><span class="p">,</span> \
             <span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers">[docs]</a>    <span class="k">def</span> <span class="nf">test_5_celery_queues_in_settings_equal_queues_being_serviced_by_celery_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Verify that all queues defined in Django settings are being serviced by a celery worker.&quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">stats</span>
         <span class="n">worker_queues</span> <span class="o">=</span> <span class="p">[]</span>
@@ -183,7 +182,7 @@
         <span class="n">queue_worker_settings_intersect_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">worker_queues_distinct</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">queue_worker_settings_intersect_length</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_6_send_a_message_to_every_queue"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_6_send_a_message_to_every_queue">[docs]</a>    <span class="k">def</span> <span class="nf">test_6_send_a_message_to_every_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_6_send_a_message_to_every_queue"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_6_send_a_message_to_every_queue">[docs]</a>    <span class="k">def</span> <span class="nf">test_6_send_a_message_to_every_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="sd">&quot;&quot;&quot;Send a message to every queue configured in Django settings.&quot;&quot;&quot;</span>
        <span class="k">global</span> <span class="n">stats</span>
        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">CELERY_QUEUES</span><span class="p">:</span>
@@ -192,7 +191,7 @@
            <span class="n">pprint</span><span class="p">(</span><span class="s">&quot;Executing a task to add 1 + 2 for queue {0}.  Result: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">sum_result</span><span class="p">))</span>
            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sum_result</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s">&quot;Task to add 1 + 2 for queue {0} didn&#39;t execute successfully.  Result: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">sum_result</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_7_celerybeat"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_7_celerybeat">[docs]</a>    <span class="k">def</span> <span class="nf">test_7_celerybeat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_7_celerybeat"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_7_celerybeat">[docs]</a>    <span class="k">def</span> <span class="nf">test_7_celerybeat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="sd">&quot;&quot;&quot;Test Celery Beat by checking to see if a specific task has executed within the last 5 seconds.&quot;&quot;&quot;</span>
        <span class="k">global</span> <span class="n">stats</span>
        <span class="n">worker_queues</span> <span class="o">=</span> <span class="p">[]</span>
@@ -216,7 +215,7 @@
        <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Celery Beat has failed because it hasn&#39;t executed the sanity.tasks.celerybeat_test task in at least 5 seconds.  Here are the stats of the number of times the sanity.tasks.celerybeat_test task was executed as of 5 seconds ago: </span><span class="si">%s</span><span class="s"> and here are the stats taken 5 seconds after: </span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">celerybeat_tasks</span><span class="p">,</span> <span class="n">celerybeat_tasks_delta</span><span class="p">)</span>
        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TestCelery.test_8_celery_logs"><a class="viewcode-back" href="../../../code.html#sanity.checks.celery.TestCelery.test_8_celery_logs">[docs]</a>    <span class="k">def</span> <span class="nf">test_8_celery_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestCelery.test_8_celery_logs"><a class="viewcode-back" href="../../../framework/code.html#sanity.checks.celery.TestCelery.test_8_celery_logs">[docs]</a>    <span class="k">def</span> <span class="nf">test_8_celery_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test celery logs by writing &#39;Sanity Check&#39; to each log.&quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">stats</span>
         <span class="n">worker_logs</span> <span class="o">=</span> <span class="p">[]</span>

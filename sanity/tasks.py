@@ -107,4 +107,14 @@ def celerybeat_test():
         
 @task
 def get_server():
+    """ Return server information.
+    
+    Get all of the related server information from the machine that the Celery worker is runnning on.
+    
+    :param None: No args.
+    :returns:  dict -- host, build, port, etc.
+    :handles: None
+    :raises: OSError
+
+    """
     return os.uname()

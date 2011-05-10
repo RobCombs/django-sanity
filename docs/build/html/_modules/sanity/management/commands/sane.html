@@ -48,10 +48,9 @@
   <h1>Source code for sanity.management.commands.sane</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot; sanity.management</span>
 
-<span class="sd">Sane management command that runs the related tests for the module passed to it</span>
+<span class="sd">Sane management command that runs the related tests for the environment resource passed to it.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">make_option</span>
 <span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TextTestRunner</span><span class="p">,</span> <span class="n">TestLoader</span>
 
@@ -72,15 +71,26 @@
                     <span class="s">&#39;solr&#39;</span><span class="p">:</span><span class="n">SANE_TEST_MODULES</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
 <span class="p">}</span>
 
-<div class="viewcode-block" id="harvest_sanity_settings"><a class="viewcode-back" href="../../../../code.html#sanity.management.commands.sane.harvest_sanity_settings">[docs]</a><span class="k">def</span> <span class="nf">harvest_sanity_settings</span><span class="p">():</span>
+<div class="viewcode-block" id="harvest_sanity_settings"><a class="viewcode-back" href="../../../../framework/code.html#sanity.management.commands.sane.harvest_sanity_settings">[docs]</a><span class="k">def</span> <span class="nf">harvest_sanity_settings</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reap sanity specific settings used for customizing sanity related tests.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_wrapped&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;SANITY&#39;</span><span class="p">)])</span>
+
+<span class="sd">    For any configurations that you&#39;d like to pass to django-sanity, just name space them</span>
+<span class="sd">    with a &#39;SANITY\_&#39; string and put them in Django settings.  This adds a great amount of flexibility</span>
+<span class="sd">    to the django-sanity framework for customized testing.  SANITY_CELERY_TIMEOUT is an example of how</span>
+<span class="sd">    we are using this concept for a custom timeout option for tests.</span>
+
+<span class="sd">    :param None: No args.</span>
+<span class="sd">    :returns:  dict -- All keyword pairs that start with &#39;SANITY\_&#39; in Django settings.</span>
+<span class="sd">    :handles: None</span>
+<span class="sd">    :raises: ValueError</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_wrapped&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;SANITY_&#39;</span><span class="p">)])</span>
 </div>
-<div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../code.html#sanity.management.commands.sane.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../framework/code.html#sanity.management.commands.sane.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
     <span class="n">DJANGO_SANITY_SETTINGS</span> <span class="o">=</span> <span class="n">harvest_sanity_settings</span><span class="p">()</span>
-    
+
     <span class="n">help</span> <span class="o">=</span> <span class="s">&#39;Usage: %prog sane &lt;resource1 resource2 ...&gt; [--celery_timeout] or  </span><span class="se">\</span>
 <span class="s">                   </span><span class="se">\n</span><span class="s">       %prog sane [--celery_timeout] to test all configured Sane modules or </span><span class="se">\</span>
 <span class="s">                   </span><span class="se">\n</span><span class="s">       %prog sane list to get a list of Sane modules to be tested </span><span class="se">\</span>
@@ -92,11 +102,12 @@
                 <span class="n">help</span><span class="o">=</span><span class="s">&quot;Specify a time out in terms of seconds for tests.  The default is 10 seconds.&quot;</span><span class="p">),</span>
     <span class="p">)</span>
 
-<div class="viewcode-block" id="Command.handle"><a class="viewcode-back" href="../../../../code.html#sanity.management.commands.sane.Command.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Match the args to the appropriate tests and quick off the test suite runner.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Command.handle"><a class="viewcode-back" href="../../../../framework/code.html#sanity.management.commands.sane.Command.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run the Django command.</span>
 
+<span class="sd">        Match the args to the appropriate tests and kick off the test suite runner.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span> 
         <span class="n">config</span><span class="o">.</span><span class="n">CELERY_TIMEOUT</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;celery_timeout&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
