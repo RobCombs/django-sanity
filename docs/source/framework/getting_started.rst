@@ -27,7 +27,8 @@ Installation
 
 ::
 
-  pip install -e git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git@master#egg=django-sanity(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
+  pip install -e git+https://github.com/RobCombs/django-sanity.git@master#egg=django-sanity
+ (or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
   Note: If you can't execute pip install for any reason, you can take the following alternate approach to get django-sanity installed:
    - git clone git clone git@github.com:RobCombs/django-sanity.git(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
    - cd django-sanity
