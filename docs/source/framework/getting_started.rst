@@ -27,8 +27,11 @@ Installation
 
 ::
 
-	git clone git clone git@github.com:RobCombs/django-sanity.git
-	or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees
+  pip install -e git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git@master#egg=django-sanity(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
+  Note: If you can't execute pip install for any reason, you can take the following alternate approach to get django-sanity installed:
+   - git clone git clone git@github.com:RobCombs/django-sanity.git(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
+   - cd django-sanity
+   - python setup.py develop
 
 2) Add the following configuration to your Django settings file.
 
@@ -52,13 +55,6 @@ Installation
 	                         "schedule": timedelta(seconds=5)
 	                         },
 	}
-
-3) Add sane to the Python sys.path.
-
-::
-
-	cd django-sanity
-	python setup.py develop
 
 Installation complete!
 

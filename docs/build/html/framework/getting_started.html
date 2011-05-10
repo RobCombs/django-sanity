@@ -78,8 +78,11 @@
 <ol class="arabic simple">
 <li>First, get the code!</li>
 </ol>
-<div class="highlight-python"><pre>git clone git clone git@github.com:RobCombs/django-sanity.git
-or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees</pre>
+<div class="highlight-python"><pre>pip install -e git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git@master#egg=django-sanity(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
+Note: If you can't execute pip install for any reason, you can take the following alternate approach to get django-sanity installed:
+ - git clone git clone git@github.com:RobCombs/django-sanity.git(or git clone git+ssh://vcs.ddtc.cmgdigital.com/git-repos/django-sanity.git for CMGdigital employees)
+ - cd django-sanity
+ - python setup.py develop</pre>
 </div>
 <ol class="arabic simple" start="2">
 <li>Add the following configuration to your Django settings file.</li>
@@ -102,12 +105,6 @@ CELERYBEAT_SCHEDULE = {
                          "schedule": timedelta(seconds=5)
                          },
 }</pre>
-</div>
-<ol class="arabic simple" start="3">
-<li>Add sane to the Python sys.path.</li>
-</ol>
-<div class="highlight-python"><pre>cd django-sanity
-python setup.py develop</pre>
 </div>
 <p>Installation complete!</p>
 <p>You can test the installation by running django-admin.py(or python manage.py) sane.  If the script attempts to execute the unit tests, then you&#8217;re done.  If not, then refer to the <a class="reference internal" href="#troubleshooting">TROUBLESHOOTING</a> section.</p>
