@@ -8,38 +8,38 @@ Sanity framework code reference
 sanity.management
 -------------------------------
 .. automodule:: sanity.management.commands.sane
-     :members:
+    :members:
 
 .. autoclass:: Command
-     :members:
+    :members:
 
 sanity.toolbox
 --------------
 .. automodule:: sanity.toolbox
-     :members:
+    :members:
 
 sanity.tasks
 ------------
 .. automodule:: sanity.tasks
-     :members:
+    :members:
 
 .. autoclass:: add
-     :members:
+    :members:
 
 .. autoclass:: get_cmdline
-     :members:
+    :members:
 
 .. autoclass:: write_to_file
-     :members:
+    :members:
 	
 .. autoclass:: get_shasum_for_celery_worker_code_path
-     :members:
+    :members:
 		
 .. autoclass:: celerybeat_test
-     :members:
+    :members:
 
 .. autoclass:: get_server
-     :members:
+    :members:
 
 ================================
 Celery unit tests code reference
@@ -47,10 +47,10 @@ Celery unit tests code reference
 sanity.checks.celery
 --------------------
 .. automodule:: sanity.checks.celery
-     :members:
+    :members:
 
 .. autoclass:: TestCelery
-     :members:
+    :members:
 
 ================================
 Solr unit tests code reference
@@ -58,4 +58,4 @@ Solr unit tests code reference
 sanity.checks.solr
 --------------------
 .. automodule:: sanity.checks.solr
-     :members:
+    :members:
