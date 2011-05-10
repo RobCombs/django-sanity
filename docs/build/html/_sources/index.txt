@@ -10,7 +10,7 @@ Welcome to django-sanity's documentation!
 .. toctree::
    :maxdepth: 2
 
-   framework/getting_started
+   getting_started
 
 ====================
 Diving into the code
